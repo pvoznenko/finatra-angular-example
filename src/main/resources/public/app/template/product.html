@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="alert alert-success alert-dismissable" data-ng-show="success">
+        {{success}}
+        <button class="close" data-ng-click="success = false">x</button>
+    </div>
+
+    <div class="alert alert-danger alert-dismissable" data-ng-show="error">
+        {{error}}
+        <button class="close" data-ng-click="error = null">x</button>
+    </div>
+</div>
+
+<div class="row">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="text-center">Product</th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-ng-repeat="product in products">
+                <td>{{product.name}}</td>
+                <td class="text-center"><button type="button" class="btn btn-primary" ng-click="addToCart(product.id)">Add to cart</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

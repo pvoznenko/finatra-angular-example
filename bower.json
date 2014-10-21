@@ -1,0 +1,19 @@
+{
+  "name": "ShoppingCart",
+  "version": "0.0.1",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap" : "twbs/bootstrap",
+    "angular": "1.3.0",
+    "angular-route": "1.3.0",
+    "angular-resource": "1.3.0"
+  }
+}

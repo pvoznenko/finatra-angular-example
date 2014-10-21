@@ -1,0 +1,10 @@
+#site {
+    margin-top: 20px;
+}
+
+#content {
+    padding: 30px;
+
+    border: 1px solid #ddd;
+    border-top: none;
+}
