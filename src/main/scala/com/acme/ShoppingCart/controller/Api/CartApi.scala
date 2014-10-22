@@ -9,7 +9,33 @@ class CartApi extends Controller {
     Map("id" -> 3, "name" -> "Surface", "price" -> 750, "quantity" -> 1)
   )
 
+  /**
+   * Get all products for user
+   */
   get("/api/cart") { request =>
     render.json(products).toFuture
+  }
+
+  /**
+   * Add new product to the user's shopping cart
+   */
+  put("/api/cart") { request =>
+    val token = request.params.getOrElse("token", null)
+
+    render.json().toFuture
+  }
+
+  /**
+   * Update information regarding user product in the shopping cart
+   */
+  post("/api/cart") { request =>
+    render.plain("ok").toFuture
+  }
+
+  /**
+   * Remove item from user's cart
+   */
+  delete("/api/cart") { request =>
+    render.plain("ok").toFuture
   }
 }

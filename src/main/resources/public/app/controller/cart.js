@@ -3,6 +3,7 @@ angular.module('shoppingCart.site').controller('cart', ['$scope', '$location', '
     $scope['totalPrice'] = 0;
     $scope['totalQuantity'] = 0;
     $scope['quantity'] = [];
+    $scope['selected'] = [];
 
     var token = User.getUserToken();
 
@@ -23,9 +24,8 @@ angular.module('shoppingCart.site').controller('cart', ['$scope', '$location', '
         angular.forEach($scope['products'], function(product) {
            $scope['quantity'][product.id] = product.quantity;
            $scope['totalQuantity'] += product.quantity;
+           $scope['totalPrice'] += product.price * product.quantity;
         });
-
-        $scope['updateTotal']();
     }, onError);
 
     $scope['removeFromCart'] = function(productId) {
@@ -83,6 +83,36 @@ angular.module('shoppingCart.site').controller('cart', ['$scope', '$location', '
 
         angular.forEach($scope['products'], function(product) {
            $scope['totalPrice'] += product.price * product.quantity;
+        });
+    };
+
+    $scope['toggleSelected'] = function(productId) {
+        var idx = $scope['selected'].indexOf(productId);
+
+        if (idx > -1) {
+            $scope['selected'].splice(idx, 1);
+        } else {
+            $scope['selected'].push(productId);
+        }
+    };
+
+    $scope['toggleAllSelected'] = function() {
+        if ($scope['master']) {
+            angular.forEach($scope['products'], function(product) {
+               $scope['selected'].push(product.id);
+            });
+        } else {
+            $scope['selected'] = [];
+        }
+    };
+
+    $scope['removeSelected'] = function() {
+        if ($scope['selected'].length <= 0) {
+            return false;
+        }
+
+        angular.forEach($scope['selected'], function(productId) {
+           $scope['removeFromCart'](productId);
         });
     };
 }]);

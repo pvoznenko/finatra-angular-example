@@ -19,17 +19,17 @@
         </thead>
         <tbody>
             <tr data-ng-repeat="product in products" id="cart-product-row-{{product.id}}" class="product">
-                <td><input type="checkbox" ng-checked="master"/></td>
+                <td><input type="checkbox" ng-checked="master" ng-model="checkbox" ng-change="toggleSelected(product.id)"/></td>
                 <td>{{product.name}}</td>
                 <td class="text-right">{{product.price}}</td>
-                <td class="text-center">
+                <td class="text-center col-md-1">
                     <input type="number" size="2" ng-change="updateQuantity(product.id)" ng-model="quantity[product.id]"
-                           min="0" required/>
+                           min="0" required class="form-control"/>
                 </td>
                 <td class="text-center"><button type="button" class="btn btn-primary" ng-click="removeFromCart(product.id)">Remove</button></td>
             </tr>
             <tr>
-                <td><input type="checkbox" ng-model="master"/></td>
+                <td><input type="checkbox" ng-model="master" ng-click="toggleAllSelected()"/></td>
                 <td>&nbsp;</td>
                 <td class="text-right">{{totalPrice}}</td>
                 <td class="text-center">{{totalQuantity}}</td>
