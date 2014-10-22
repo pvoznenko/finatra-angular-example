@@ -1,11 +1,19 @@
 package com.acme.ShoppingCart.controller.Api
 
 import com.twitter.finatra.Controller
+import com.acme.ShoppingCart.helper.BearerTokenGenerator
+import com.acme.ShoppingCart.model.UsersModel
 
 class UserApi extends Controller {
-  import com.acme.ShoppingCart.helper.BearerTokenGenerator
-
   get("/api/user/authentication") { request =>
-    render.json(Map("token" -> new BearerTokenGenerator().generateSHAToken("ShoppingCart"))).toFuture
+    val token = new BearerTokenGenerator().generateSHAToken("ShoppingCart")
+
+    try {
+      UsersModel add token
+    } catch {
+      case exception: Throwable => log.error(exception, "Adding user to DB failed!")
+    }
+
+    render.json(Map("token" -> token)).toFuture
   }
 }

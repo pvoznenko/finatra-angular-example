@@ -78,22 +78,6 @@ object App extends FinatraServer {
     }
 
     /**
-     * Rendering views
-     *
-     * curl http://localhost:7070/template
-     */
-    class AnView extends View {
-      val template = "an_view.mustache"
-      val some_val = "random value here"
-    }
-
-    get("/template") { request =>
-      val anView = new AnView
-      render.view(anView).toFuture
-    }
-
-
-    /**
      * Custom Error Handling
      *
      * curl http://localhost:7070/error
@@ -125,16 +109,6 @@ object App extends FinatraServer {
         case _ =>
           render.status(500).plain("Something went wrong!").toFuture
       }
-    }
-
-
-    /**
-     * Custom 404s
-     *
-     * curl http://localhost:7070/notfound
-     */
-    notFound { request =>
-      render.status(404).plain("not found yo").toFuture
     }
 
     /**

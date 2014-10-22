@@ -1,28 +1,36 @@
 package com.acme.ShoppingCart.controller.Api
 
+import com.acme.ShoppingCart.model.{UsersModel, UserCartModel}
 import com.twitter.finatra.Controller
 
 class CartApi extends Controller {
-  val products = Seq(
-    Map("id" -> 1, "name" -> "Mac Book Retina 15'", "price" -> 1299, "quantity" -> 1),
-    Map("id" -> 2, "name" -> "Nexus 6", "price" -> 649, "quantity" -> 2),
-    Map("id" -> 3, "name" -> "Surface", "price" -> 750, "quantity" -> 1)
-  )
 
   /**
    * Get all products for user
    */
   get("/api/cart") { request =>
-    render.json(products).toFuture
+    val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
+    render.json(UserCartModel.getUserProducts(userId)).toFuture
   }
 
   /**
    * Add new product to the user's shopping cart
    */
   put("/api/cart") { request =>
-    val token = request.params.getOrElse("token", null)
+    try {
+      val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
+      val productId = request.params.getInt("productId").head
+      val product = UserCartModel.getUserProduct(userId, productId)
 
-    render.json().toFuture
+      if (product.isEmpty) UserCartModel.add(userId, productId)
+      else UserCartModel.incProductQuantity(userId, productId)
+
+      render.json(Map("response" -> "done")).toFuture
+    } catch {
+      case exception: Throwable =>
+        log.error(exception, "Adding new product failed!")
+        render.status(500).json(Seq("error" -> exception.toString)).toFuture
+    }
   }
 
   /**
