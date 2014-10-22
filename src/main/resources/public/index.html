@@ -11,7 +11,11 @@
 
         <div id="site" class="container">
             <div class="row">
-                <p class="text-right">Your current user id: {{userId}}</p>
+                <div class="alert alert-danger alert-dismissable" data-ng-show="authError">
+                    {{authError}}
+                    <button class="close" data-ng-click="authError = null">x</button>
+                </div>
+                <p class="text-right" data-ng-show="userToken">Your current user auth token: {{userToken}}</p>
             </div>
             <ul class="nav nav-tabs nav-justified">
                 <li data-ng-class="{active: currentSite === '/'}"><a href="#/">Products</a></li>
@@ -35,7 +39,7 @@
         <script src="/app/service/cart.js" type="text/javascript"></script>
         <script src="/app/service/product.js" type="text/javascript"></script>
         <script src="/app/service/user.js" type="text/javascript"></script>
-        <script src="/app/service/products.js" type="text/javascript"></script>
+        <script src="/app/service/userAuth.js" type="text/javascript"></script>
 
         <script src="/app/controller/index.js" type="text/javascript"></script>
         <script src="/app/controller/product.js" type="text/javascript"></script>

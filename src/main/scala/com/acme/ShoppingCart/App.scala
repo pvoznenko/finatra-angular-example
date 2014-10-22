@@ -1,26 +1,12 @@
 package com.acme.ShoppingCart
 
+import com.acme.ShoppingCart.controller.IndexApp
+import com.acme.ShoppingCart.controller.Api.{ProductApi, CartApi, UserApi}
 import com.twitter.finatra._
 import com.twitter.finatra.ContentType._
 
 object App extends FinatraServer {
-  class IndexApp extends Controller {
-    get("/") { request =>
-      render.static("index.html").toFuture
-    }
-  }
-
   class ExampleApp extends Controller {
-//
-//    /**
-//     * Basic Example
-//     *
-//     * curl http://localhost:7070/ => "hello world"
-//     */
-//    get("/") { request =>
-//      render.static("index.html").toFuture
-//    }
-
     delete("/photos") { request =>
       render.plain("deleted!").toFuture
     }
@@ -224,5 +210,9 @@ object App extends FinatraServer {
   }
 
   register(new IndexApp())
+  register(new UserApi())
+  register(new ProductApi())
+  register(new CartApi())
+
   register(new ExampleApp())
 }

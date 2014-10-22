@@ -1,8 +1,8 @@
-angular.module('shoppingCart.site').controller('product', ['$scope', 'Product', 'Products', 'User', function ($scope, Product, Products, User) {
+angular.module('shoppingCart.site').controller('product', ['$scope', 'Product', 'User', 'Cart', function ($scope, Product, User, Cart) {
     $scope['success'] = false;
     $scope['error'] = false;
 
-    $scope['products'] = Products.getProducts();
+    $scope['products'] = Product.query();
 
     $scope['addToCart'] = function(productId) {
         productId = parseInt(productId, 10);
@@ -12,7 +12,7 @@ angular.module('shoppingCart.site').controller('product', ['$scope', 'Product', 
             return false;
         }
 
-        Product.addToCart({"productId": productId, "userId": User.getUserId()}, function() {
+        Cart.add({"productId": productId, "token": User.getUserToken()}, function() {
             $scope['success'] = 'Product with id "' + productId + '" successfully added to cart!';
         }, function(err) {
             $scope['error'] = err;

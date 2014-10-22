@@ -1,11 +1,16 @@
-angular.module('shoppingCart.site').controller('index', ['$scope', '$location', 'User', function ($scope, $location, User) {
-    var userId = User.getUserId();
+angular.module('shoppingCart.site').controller('index', ['$scope', '$location', 'User', 'UserAuth', function ($scope, $location, User, UserAuth) {
+    $scope['authError'] = false;
 
-    if (userId === null) {
-        userId = User.setUserId().getUserId();
-    }
+    UserAuth.getAuthToken(function(response) {
+        if (typeof response.token == 'undefined') {
+            $scope['authError'] = 'Can not get token from server!';
+            return;
+        }
 
-    $scope['userId'] = userId;
+        $scope['userToken'] = User.setUserToken(response.token).getUserToken();
+    }, function(err) {
+        $scope['authError'] = err;
+    });
 
     $scope['currentSite'] = $location.path();
     $scope.$on('$routeChangeSuccess', function() {

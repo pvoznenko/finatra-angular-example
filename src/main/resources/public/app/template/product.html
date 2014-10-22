@@ -15,12 +15,14 @@
         <thead>
             <tr>
                 <th class="text-center">Product</th>
+                <th class="text-center">Price</th>
                 <th class="text-center">Action</th>
             </tr>
         </thead>
         <tbody>
             <tr data-ng-repeat="product in products">
                 <td>{{product.name}}</td>
+                <td>{{product.price}}</td>
                 <td class="text-center"><button type="button" class="btn btn-primary" ng-click="addToCart(product.id)">Add to cart</button></td>
             </tr>
         </tbody>

@@ -1,1 +1,42 @@
-as
+<div class="row">
+    <div class="alert alert-danger alert-dismissable" data-ng-show="error">
+        {{error}}
+        <button class="close" data-ng-click="error = null">x</button>
+    </div>
+</div>
+
+<div class="row">
+    <p data-ng-show="products.length <= 0">Shopping cart is empty!</p>
+    <table id="cart" class="table table-striped table-hover" data-ng-show="products.length > 0">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th class="text-center">Product</th>
+                <th class="text-center">Price</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-ng-repeat="product in products" id="cart-product-row-{{product.id}}" class="product">
+                <td><input type="checkbox" ng-checked="master"/></td>
+                <td>{{product.name}}</td>
+                <td class="text-right">{{product.price}}</td>
+                <td class="text-center">
+                    <input type="number" size="2" ng-change="updateQuantity(product.id)" ng-model="quantity[product.id]"
+                           min="0" required/>
+                </td>
+                <td class="text-center"><button type="button" class="btn btn-primary" ng-click="removeFromCart(product.id)">Remove</button></td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" ng-model="master"/></td>
+                <td>&nbsp;</td>
+                <td class="text-right">{{totalPrice}}</td>
+                <td class="text-center">{{totalQuantity}}</td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-primary" ng-click="removeSelected()">Remove Selected</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

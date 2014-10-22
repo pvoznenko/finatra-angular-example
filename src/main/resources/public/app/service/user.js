@@ -1,12 +1,12 @@
 angular.module('shoppingCart.site').factory('User', function () {
-    var userId = null;
+    var userToken = null;
 
     var methods = {
-         getUserId: function () {
-             return userId;
+         getUserToken: function () {
+             return userToken;
          },
-         setUserId: function () {
-             userId = new Date().getTime();
+         setUserToken: function (token) {
+             userToken = token;
 
              return methods;
          }
