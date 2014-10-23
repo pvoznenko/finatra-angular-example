@@ -5,6 +5,12 @@ import com.acme.ShoppingCart.helper.BearerTokenGenerator
 import com.acme.ShoppingCart.model.UsersModel
 
 class UserApi extends Controller {
+
+  /**
+   * Get authentication token
+   *
+   * curl http://localhost:7070/api/user/authentication
+   */
   get("/api/user/authentication") { request =>
     val token = new BearerTokenGenerator().generateSHAToken("ShoppingCart")
 

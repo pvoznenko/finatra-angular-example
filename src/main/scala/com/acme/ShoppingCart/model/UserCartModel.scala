@@ -21,12 +21,18 @@ object UserCartModel {
 
   def getUserProduct(userId: Int, productId: Int) = DB.connection.withSession { implicit session => getByUserAndProduct(userId, productId).run }
 
-  def incProductQuantity(userId: Int, productId: Int) = DB.connection.withSession { implicit session =>
+  def updateProductQuantity(userId: Int, productId: Int, amount: Option[Int] = None) = DB.connection.withSession { implicit session =>
     val query = getByUserAndProduct(userId, productId).map(_.quantity)
-    val quantity = query.firstOption.getOrElse(-1)
 
-    if (quantity < 0) quantity
-    else query.update(quantity + 1)
+    if (amount.isDefined) {
+      val quantity = amount.getOrElse(-1)
+      if (quantity < 0) quantity
+      else query.update(quantity)
+    } else {
+      val quantity = query.firstOption.getOrElse(-1)
+      if (quantity < 0) quantity
+      else query.update(quantity + 1)
+    }
   }
 
   def remove(userId: Int, productId: Int) = DB.connection.withSession { implicit session => getByUserAndProduct(userId, productId).delete }

@@ -92,24 +92,24 @@ object App extends FinatraServer {
      *
      * curl http://localhost:7070/unauthorized
      */
-    class Unauthorized extends Exception
-
-    get("/unauthorized") { request =>
-      throw new Unauthorized
-    }
-
-    error { request =>
-      request.error match {
-        case Some(e:ArithmeticException) =>
-          render.status(500).plain("whoops, divide by zero!").toFuture
-        case Some(e:Unauthorized) =>
-          render.status(401).plain("Not Authorized!").toFuture
-        case Some(e:UnsupportedMediaType) =>
-          render.status(415).plain("Unsupported Media Type!").toFuture
-        case _ =>
-          render.status(500).plain("Something went wrong!").toFuture
-      }
-    }
+//    class Unauthorized extends Exception
+//
+//    get("/unauthorized") { request =>
+//      throw new Unauthorized
+//    }
+//
+//    error { request =>
+//      request.error match {
+//        case Some(e:ArithmeticException) =>
+//          render.status(500).plain("whoops, divide by zero!").toFuture
+//        case Some(e:Unauthorized) =>
+//          render.status(401).plain("Not Authorized!").toFuture
+//        case Some(e:UnsupportedMediaType) =>
+//          render.status(415).plain("Unsupported Media Type!").toFuture
+//        case _ =>
+//          render.status(500).plain("Something went wrong!").toFuture
+//      }
+//    }
 
     /**
      * Arbitrary Dispatch

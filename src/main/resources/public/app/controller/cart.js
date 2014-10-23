@@ -46,7 +46,7 @@ angular.module('shoppingCart.site').controller('cart', ['$scope', '$location', '
 
         data.productId = productId;
 
-        Cart.remove(data, null, onError);
+        Cart.remove(data, function(){ }, onError);
     };
 
     $scope['updateQuantity'] = function(productId) {
@@ -56,7 +56,8 @@ angular.module('shoppingCart.site').controller('cart', ['$scope', '$location', '
         $scope['totalQuantity'] = 0;
 
         angular.forEach($scope['products'], function(product) {
-            var value = parseInt($scope['quantity'][product.id], 10);
+            var value = parseInt($scope['quantity'][product.id], 10),
+                data = userData;
 
             if (isNaN(value)) {
                 value = 0;
@@ -68,8 +69,9 @@ angular.module('shoppingCart.site').controller('cart', ['$scope', '$location', '
             this.push(product);
 
             if (product.id == productId) {
-                userData.product = product;
-                Cart.save(userData, null, onError);
+                data.productId = product.id;
+                data.quantity = product.quantity;
+                Cart.save(data, function(){ }, onError);
             }
         }, products);
 

@@ -28,15 +28,17 @@
                 </td>
                 <td class="text-center"><button type="button" class="btn btn-primary" ng-click="removeFromCart(product.id)">Remove</button></td>
             </tr>
+        </tbody>
+        <tfoot>
             <tr>
                 <td><input type="checkbox" ng-model="master" ng-click="toggleAllSelected()"/></td>
-                <td>&nbsp;</td>
-                <td class="text-right">{{totalPrice}}</td>
-                <td class="text-center">{{totalQuantity}}</td>
+                <th>Total:</th>
+                <th class="text-right">{{totalPrice}}</th>
+                <th class="text-center">{{totalQuantity}}</th>
                 <td class="text-center">
                     <button type="button" class="btn btn-primary" ng-click="removeSelected()">Remove Selected</button>
                 </td>
             </tr>
-        </tbody>
+        </tfoot>
     </table>
 </div>
