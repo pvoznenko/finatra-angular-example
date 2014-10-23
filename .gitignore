@@ -7,3 +7,4 @@ release.properties
 *.iml
 .idea
 .idea/*
+src/main/resources/public/components
