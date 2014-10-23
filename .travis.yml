@@ -1,1 +1,5 @@
- language: scala
+language: scala
+
+before_install:
+  - npm install -g bower
+  - bower install
