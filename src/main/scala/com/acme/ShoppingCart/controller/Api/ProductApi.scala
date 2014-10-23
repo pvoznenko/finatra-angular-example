@@ -7,6 +7,8 @@ class ProductApi extends Controller {
 
   /**
    * Get list of available products in our shop
+   *
+   * curl http://localhost:7070/api/product
    */
   get("/api/product") { request =>
     render.json(ProductsModel.getAll).toFuture

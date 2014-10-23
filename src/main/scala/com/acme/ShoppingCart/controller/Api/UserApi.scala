@@ -22,4 +22,13 @@ class UserApi extends Controller {
 
     render.json(Map("token" -> token)).toFuture
   }
+
+  /**
+   * Method only for debugging - will return list of users
+   *
+   * curl http://localhost:7070/api/user
+   */
+  get("/api/user") { request =>
+    render.json(UsersModel.getAll).toFuture
+  }
 }

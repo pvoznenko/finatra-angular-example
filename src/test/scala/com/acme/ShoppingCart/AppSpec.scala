@@ -1,130 +1,170 @@
 package com.acme.ShoppingCart
 
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
+import com.acme.ShoppingCart.controller.Api.{CartApi, ProductApi, UserApi}
 import com.twitter.finatra.test._
 import com.twitter.finatra.FinatraServer
-import com.acme.ShoppingCart._
+import com.acme.ShoppingCart.controller.IndexApp
+import scala.collection.Map
+import scala.util.parsing.json.JSON
 
 class AppSpec extends FlatSpecHelper {
 
-  val app = new App.ExampleApp
   override val server = new FinatraServer
-  server.register(app)
 
-  
+  server.register(new IndexApp())
+  server.register(new UserApi())
+  server.register(new ProductApi())
+  server.register(new CartApi())
+
   "GET /notfound" should "respond 404" in {
     get("/notfound")
-    response.body   should equal ("not found yo")
+    response.body   should equal ("not found")
     response.code   should equal (404)
   }
 
-  "GET /error" should "respond 500" in {
-    get("/error")
-    response.body   should equal ("whoops, divide by zero!")
-    response.code   should equal (500)
-  }
-
-  "GET /unauthorized" should "respond 401" in {
-    get("/unauthorized")
+  "GET /api/cart" should "respond 401" in {
+    get("/api/cart")
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
   }
 
+  "PUT /api/cart" should "respond 401" in {
+    put("/api/cart")
+    response.body   should equal ("Not Authorized!")
+    response.code   should equal (401)
+  }
+
+  "POST /api/cart" should "respond 401" in {
+    post("/api/cart")
+    response.body   should equal ("Not Authorized!")
+    response.code   should equal (401)
+  }
+
+  "DELETE /api/cart" should "respond 401" in {
+    delete("/api/cart")
+    response.body   should equal ("Not Authorized!")
+    response.code   should equal (401)
+  }
+
+  "GET /api/product" should "respond 200" in {
+    get("/api/product")
+    JSON.parseFull(response.body).get should equal(TestData.products)
+    response.code   should equal (200)
+  }
+
+  "GET /api/user/authentication" should "respond 200" in {
+    get("/api/user/authentication")
+    response.body.contains ("token") should equal(true)
+    response.code   should equal (200)
+  }
+
   "GET /index.html" should "respond 200" in {
     get("/")
-    response.body.contains("Finatra - The scala web framework") should equal(true)
-    response.code should equal(200)
+    response.body.contains ("Your current user auth token") should equal(true)
+    response.code should equal (200)
   }
 
-  "GET /user/foo" should "responsd with hello foo" in {
-    get("/user/foo")
-    response.body should equal ("hello foo")
+  def getAuthToken = {
+    get("/api/user/authentication")
+    response.code   should equal (200)
+    JSON.parseFull(response.body) match {
+      case Some(map: Map[String, String]) => map
+      case _ => Map("" -> "")
+    }
   }
 
-  "GET /headers" should "respond with Foo:Bar" in {
-    get("/headers")
-    response.getHeader("Foo") should equal("Bar")
+  "Authorized user" should "respond 200" in {
+    get("/api/cart", getAuthToken)
+    response.code   should equal (200)
   }
 
-  "GET /data.json" should """respond with {"foo":"bar"}""" in {
-    get("/data.json")
-    response.body should equal("""{"foo":"bar"}""")
+  "Authorized user" should "add product once" in {
+    val token = getAuthToken
+    put("/api/cart", token ++ Map("productId" -> "1"))
+    response.code   should equal (200)
+
+    get("/api/cart", token)
+    response.code   should equal (200)
+    JSON.parseFull(response.body).get should equal(TestData.firstProduct)
   }
 
-  "GET /search?q=foo" should "respond with no results for foo" in {
-    get("/search?q=foo")
-    response.body should equal("no results for foo")
+  "Authorized user by adding product more then once" should "increase quantity" in {
+    val token = getAuthToken
+    put("/api/cart", token ++ Map("productId" -> "1"))
+    response.code   should equal (200)
+
+    put("/api/cart", token ++ Map("productId" -> "1"))
+    response.code   should equal (200)
+
+    get("/api/cart", token)
+    response.code   should equal (200)
+    JSON.parseFull(response.body).get should equal(TestData.updatedProduct1)
   }
 
-  "GET /redirect" should "respond with /" in {
-    get("/redirect")
-    response.body should equal("Redirecting to <a href=\"http://localhost:7070/\">http://localhost:7070/</a>.")
-    response.code should equal(301)
+  "Authorized user add product without product id" should "get error 500" in {
+    put("/api/cart", getAuthToken)
+    response.code   should equal (500)
   }
 
-  "OPTIONS /some/resource" should "respond with usage description" in {
-    options("/some/resource")
-    response.body should equal("usage description")
+  "Authorized user" should "update product quantity" in {
+    val token = getAuthToken
+
+    put("/api/cart", token ++ Map("productId" -> "1"))
+    response.code   should equal (200)
+
+    post("/api/cart", token ++ Map("productId" -> "1"))
+    response.code   should equal (200)
+
+    get("/api/cart", token)
+    JSON.parseFull(response.body).get should equal(TestData.updatedProduct1)
   }
 
-  "GET /template" should "respond with a rendered template" in {
-    get("/template")
-    response.body should equal("Your value is random value here")
+  "Authorized user" should "specify product quantity" in {
+    val token = getAuthToken
+
+    put("/api/cart", token ++ Map("productId" -> "1"))
+    response.code   should equal (200)
+
+    post("/api/cart", token ++ Map("productId" -> "1", "quantity" -> "10"))
+    response.code   should equal (200)
+
+    get("/api/cart", token)
+    JSON.parseFull(response.body).get should equal(TestData.updatedProduct2)
   }
 
-  "GET /blog/index.json" should "should have json" in {
-    get("/blog/index.json")
-    response.body should equal("""{"value":"hello"}""")
+  "Authorized user update product without product id" should "get error 500" in {
+    val token = getAuthToken
+
+    put("/api/cart", token ++ Map("productId" -> "1"))
+    response.code   should equal (200)
+
+    post("/api/cart", token)
+    response.code   should equal (500)
   }
 
-  "GET /blog/index.html" should "should have html" in {
-    get("/blog/index.html")
-    response.body should equal("""<h1>Hello</h1>""")
+  "Authorized user update product that he do not have" should "get error 500" in {
+    post("/api/cart", getAuthToken ++ Map("productId" -> "1"))
+    response.code   should equal (500)
   }
 
-  "GET /blog/index.rss" should "respond in a 415" in {
-    get("/blog/index.rss")
-    response.code should equal(415)
+  "Authorized user" should "remove product" in {
+    val token = getAuthToken
+
+    put("/api/cart", token ++ Map("productId" -> "1"))
+    response.code   should equal (200)
+
+    get("/api/cart", token)
+    JSON.parseFull(response.body).get should equal(TestData.firstProduct)
+
+    delete("/api/cart", token ++ Map("productId" -> "1"))
+    response.code   should equal (200)
+
+    get("/api/cart", token)
+    JSON.parseFull(response.body).get should equal(List())
   }
 
-  "GET /go_home" should "render same as /" in {
-    get("/go_home")
-    response.body.contains("Finatra - The scala web framework") should equal(true)
-    response.code should equal(200)
+  "Authorized user remove product without product id" should "get error 500" in {
+    delete("/api/cart", getAuthToken)
+    response.code   should equal (500)
   }
-
-  "GET /search_for_dogs" should "render same as /search?q=dogs" in {
-    get("/search_for_dogs")
-    response.code should equal(200)
-    response.body should equal("no results for dogs")
-  }
-
-  "GET /delete_photos" should "render same as DELETE /photos" in {
-    get("/delete_photos")
-    response.code should equal(200)
-    response.body should equal("deleted!")
-  }
-
-  "GET /gif" should "render dealwithit.gif" in {
-    get("/gif")
-    response.code should equal(200)
-    response.originalResponse.getContent().array().head should equal(71) // capital "G", detects the gif
-  }
-
-  "GET /another/page with html" should "respond with html" in {
-    get("/another/page", Map.empty, Map("Accept" -> "text/html"))
-    response.body should equal("an html response")
-  }
-
-  "GET /another/page with json" should "respond with json" in {
-    get("/another/page", Map.empty, Map("Accept" -> "application/json"))
-    response.body should equal("an json response")
-  }
-
-  "GET /another/page with unsupported type" should "respond with catch all" in {
-    get("/another/page", Map.empty, Map("Accept" -> "foo/bar"))
-    response.body should equal("default fallback response")
-  }
-
 }
