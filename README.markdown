@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/fosco-maestro/finatra-angular-example.svg)](https://travis-ci.org/fosco-maestro/finatra-angular-example)
 
-This example using [Finatra](http://finatra.info/) for the backend, [H2](http://www.h2database.com/) as data storage and 
+This example using [Finatra](http://finatra.info/) for the backend and [Slick](http://slick.typesafe.com/) for work with [H2](http://www.h2database.com/) that used as data storage. 
 [AngularJS](https://angularjs.org/) + [Bootstrap](http://getbootstrap.com/) for the frontend as Single Page Application.
 
 Finatra requires either [maven](http://maven.apache.org/) or [sbt](http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html) to build and run your app.
