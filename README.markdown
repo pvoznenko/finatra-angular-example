@@ -114,8 +114,16 @@ $ curl -X DELETE -G http://localhost:7070/api/cart -d token={token} -d productId
 [error] /Users/pavlo/.ivy2/cache/com.twitter/finatra_2.10/jars/finatra_2.10-1.5.2.jar:public/index.html
 [error] Total time: 7 s, completed Oct 23, 2014 12:26:51 PM
 ```
-
 Issue reported in following ticket: [https://github.com/twitter/finatra/issues/133](https://github.com/twitter/finatra/issues/133)
+
+Second one is warning durring tests ```$ sbt test```
+
+```
+[warn] /Users/pavlo/Projects/shopping-cart/src/test/scala/com/acme/ShoppingCart/AppSpec.scala:71: non-variable type argument String in type pattern scala.collection.Map[String,String] is unchecked since it is eliminated by erasure
+[warn]       case Some(map: Map[String, String]) => map
+[warn]                      ^
+[warn] one warning found
+```
 
 ## Copyright
 
