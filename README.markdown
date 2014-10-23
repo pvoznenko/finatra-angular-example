@@ -1,44 +1,124 @@
-# ShoppingCart
+# Finatra AngularJS Example Application - ShoppingCart
+
+[![Build Status](https://travis-ci.org/fosco-maestro/finatra-angular-example.svg)](https://travis-ci.org/fosco-maestro/finatra-angular-example)
+
+This example using [Finatra](http://finatra.info/) for the backend, [H2](http://www.h2database.com/) as data storage and 
+[AngularJS](https://angularjs.org/) + [Bootstrap](http://getbootstrap.com/) for the frontend as Single Page Application.
 
 Finatra requires either [maven](http://maven.apache.org/) or [sbt](http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html) to build and run your app.
 
-## SBT Instructions
+## Setup
 
-### Runs your app on port 7070
+### Bower Instructions
 
-    sbt run
+For managing dependencies for the frontend application using [Bower](http://bower.io/).
 
-### Testing
+Before running application please install frontend dependencies by using following command:
 
-    sbt test
+```
+$ bower install
+```
 
-### Packaging (fatjar)
+### SBT Instructions
 
-    sbt assembly
+#### Runs your app on port 7070
 
+Ti run application use following command:
 
-## Maven Instructions
+```
+$ sbt run
+```
 
-### Runs your app on port 7070
+It will start on port 7070, so you should see result on: [http://localhost:7070](http://localhost:7070)
 
-    mvn scala:run
+#### Testing
 
-### Testing
+You can run tests:
 
-    mvn test
+```
+$ sbt test
+```
 
-### Packaging (fatjar)
+## Application API
 
-    mvn package
+Application contain public API and private that requires authentication first.
 
+You can use [cURL](http://curl.haxx.se/) to test application.
 
-## Heroku
+### Public API
 
-### To put on heroku
+#### /api/user
 
-    heroku create
-    git push heroku master
+You can get authentication token for your communication with server's private API by querying following URL:
 
-### To run anywhere else
+```
+$ curl http://localhost:7070/api/user/authentication
+```
 
-    java -jar target/*-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+You can also can check list of authenticated users by following URL (this part made only for debugging):
+
+```
+$ curl http://localhost:7070/api/user
+```
+
+#### /api/product
+
+On following URL you can get list of available products:
+ 
+```
+curl http://localhost:7070/api/product
+```
+
+### Private API
+
+For this part of API you need to have authentication toking provided by ```/api/user/authentication```
+
+#### /api/cart
+
+You can get list of all products currently in your basket:
+
+```
+$ curl -X GET -G http://localhost:7070/api/cart -d token={token}
+```
+
+Add new product to your basket:
+
+```
+$ curl -X PUT http://localhost:7070/api/cart -d productId={product_id} -d token={token}
+```
+
+**Please note** that by adding the same product multiple time into your basket, you will just increase it quantity.
+
+You can update quantity of product that is already in your basket:
+
+```
+$ curl -X POST http://localhost:7070/api/cart -d productId={product_id} -d token={token} -d quantity={quantity.?}
+```
+
+**Please note** that parameter ```quantity``` is optional, you can set persist amount of product by specifying 
+it or just leave it empty and quantity of product will be increased by 1. 
+
+You can remove product from your cart using following URL:
+
+```
+$ curl -X DELETE -G http://localhost:7070/api/cart -d token={token} -d productId={product_id}
+```
+
+## Known Issues
+
+```$ sbt assembly``` will hangup with an error:
+
+```
+[error] (*:assembly) deduplicate: different file contents found in the following:
+[error] public/index.html
+[error] /Users/pavlo/.ivy2/cache/com.twitter/finatra_2.10/jars/finatra_2.10-1.5.2.jar:public/index.html
+[error] Total time: 7 s, completed Oct 23, 2014 12:26:51 PM
+```
+
+Issue reported in following ticket: [https://github.com/twitter/finatra/issues/133](https://github.com/twitter/finatra/issues/133)
+
+## Copyright
+
+Copyright (C) 2014 Pavlo Voznenko.
+
+Distributed under the MIT License.
