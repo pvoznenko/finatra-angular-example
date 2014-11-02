@@ -1,9 +1,9 @@
 package com.acme.ShoppingCart
 
-import com.acme.ShoppingCart.controller.Api.{CartApi, ProductApi, UserApi}
+import com.acme.ShoppingCart.controllers.Api.{CartApi, ProductsApi, UsersApi}
 import com.twitter.finatra.test._
 import com.twitter.finatra.FinatraServer
-import com.acme.ShoppingCart.controller.IndexApp
+import com.acme.ShoppingCart.controllers.IndexApp
 import scala.collection.Map
 import scala.util.parsing.json.JSON
 
@@ -12,8 +12,8 @@ class AppSpec extends FlatSpecHelper {
   override val server = new FinatraServer
 
   server.register(new IndexApp())
-  server.register(new UserApi())
-  server.register(new ProductApi())
+  server.register(new UsersApi())
+  server.register(new ProductsApi())
   server.register(new CartApi())
 
   "GET /notfound" should "respond 404" in {
@@ -46,14 +46,14 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (401)
   }
 
-  "GET /api/product" should "respond 200" in {
-    get("/api/product")
+  "GET /api/products" should "respond 200" in {
+    get("/api/products")
     JSON.parseFull(response.body).get should equal(TestData.products)
     response.code   should equal (200)
   }
 
-  "GET /api/user/authentication" should "respond 200" in {
-    get("/api/user/authentication")
+  "GET /api/users/authentication" should "respond 200" in {
+    get("/api/users/authentication")
     response.body.contains ("token") should equal(true)
     response.code   should equal (200)
   }
@@ -65,7 +65,7 @@ class AppSpec extends FlatSpecHelper {
   }
 
   def getAuthToken = {
-    get("/api/user/authentication")
+    get("/api/users/authentication")
     response.code   should equal (200)
     JSON.parseFull(response.body) match {
       case Some(map: Map[String, String]) => map

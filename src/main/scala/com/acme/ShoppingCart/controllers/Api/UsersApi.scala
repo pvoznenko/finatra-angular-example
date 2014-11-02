@@ -1,17 +1,17 @@
-package com.acme.ShoppingCart.controller.Api
+package com.acme.ShoppingCart.controllers.Api
 
 import com.twitter.finatra.Controller
-import com.acme.ShoppingCart.helper.BearerTokenGenerator
-import com.acme.ShoppingCart.model.UsersModel
+import com.acme.ShoppingCart.helpers.BearerTokenGenerator
+import com.acme.ShoppingCart.models.UsersModel
 
-class UserApi extends Controller {
+class UsersApi extends Controller {
 
   /**
    * Get authentication token
    *
    * curl http://localhost:7070/api/user/authentication
    */
-  get("/api/user/authentication") { request =>
+  get("/api/users/authentication") { request =>
     val token = new BearerTokenGenerator().generateSHAToken("ShoppingCart")
 
     try {
@@ -28,7 +28,7 @@ class UserApi extends Controller {
    *
    * curl http://localhost:7070/api/user
    */
-  get("/api/user") { request =>
+  get("/api/users") { request =>
     render.json(UsersModel.getAll).toFuture
   }
 }

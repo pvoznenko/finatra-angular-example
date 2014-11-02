@@ -1,8 +1,8 @@
-angular.module('shoppingCart.site').controller('product', ['$scope', 'Product', 'User', 'Cart', function ($scope, Product, User, Cart) {
+angular.module('shoppingCart.site').controller('products', ['$scope', 'Products', 'User', 'Cart', function ($scope, Products, User, Cart) {
     $scope['success'] = false;
     $scope['error'] = false;
 
-    $scope['products'] = Product.query();
+    $scope['products'] = Products.query();
 
     $scope['addToCart'] = function(productId) {
         productId = parseInt(productId, 10);

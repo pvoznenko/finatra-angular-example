@@ -1,7 +1,7 @@
-package com.acme.ShoppingCart.model
+package com.acme.ShoppingCart.models
 
 import scala.slick.driver.H2Driver.simple._
-import com.acme.ShoppingCart.model.database.{Products, DB, UserCart, Cart}
+import com.acme.ShoppingCart.models.database.{Products, DB, UserCart, Cart}
 
 object UserCartModel {
   val userCart = TableQuery[UserCart]

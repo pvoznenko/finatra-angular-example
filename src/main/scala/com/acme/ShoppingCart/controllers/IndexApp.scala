@@ -1,4 +1,4 @@
-package com.acme.ShoppingCart.controller
+package com.acme.ShoppingCart.controllers
 
 import com.twitter.finatra.Controller
 import com.acme.ShoppingCart.exception.Unauthorized

@@ -1,6 +1,6 @@
-package com.acme.ShoppingCart.controller.Api
+package com.acme.ShoppingCart.controllers.Api
 
-import com.acme.ShoppingCart.model.{UsersModel, UserCartModel}
+import com.acme.ShoppingCart.models.{UsersModel, UserCartModel}
 import com.twitter.finatra.Controller
 
 class CartApi extends Controller {

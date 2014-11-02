@@ -1,10 +1,10 @@
 window.app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/', {
-        templateUrl: 'app/template/product.html',
-        controller: 'product'
+        templateUrl: 'app/templates/products.html',
+        controller: 'products'
     })
     .when('/cart', {
-        templateUrl: 'app/template/cart.html',
+        templateUrl: 'app/templates/cart.html',
         controller: 'cart'
     })
     .otherwise({

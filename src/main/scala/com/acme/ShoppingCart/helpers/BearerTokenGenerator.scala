@@ -1,4 +1,4 @@
-package com.acme.ShoppingCart.helper
+package com.acme.ShoppingCart.helpers
 
 /*
  * Generates a Bearer Token with a length of

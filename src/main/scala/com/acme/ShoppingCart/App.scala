@@ -1,12 +1,12 @@
 package com.acme.ShoppingCart
 
-import com.acme.ShoppingCart.controller.IndexApp
-import com.acme.ShoppingCart.controller.Api.{ProductApi, CartApi, UserApi}
+import com.acme.ShoppingCart.controllers.IndexApp
+import com.acme.ShoppingCart.controllers.Api.{ProductsApi, CartApi, UsersApi}
 import com.twitter.finatra._
 
 object App extends FinatraServer {
   register(new IndexApp())
-  register(new UserApi())
-  register(new ProductApi())
+  register(new UsersApi())
+  register(new ProductsApi())
   register(new CartApi())
 }
