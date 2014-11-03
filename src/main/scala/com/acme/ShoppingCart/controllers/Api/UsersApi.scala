@@ -9,26 +9,27 @@ class UsersApi extends Controller {
   /**
    * Get authentication token
    *
-   * curl http://localhost:7070/api/user/authentication
+   * curl -i -X POST http://localhost:7070/api/users/authentication
    */
-  get("/api/users/authentication") { request =>
-    val token = new BearerTokenGenerator().generateSHAToken("ShoppingCart")
+  post("/api/users/authentication") { request =>
+    val token = new BearerTokenGenerator generateSHAToken "ShoppingCart"
 
-    try {
-      UsersModel add token
-    } catch {
-      case exception: Throwable => log.error(exception, "Adding user to DB failed!")
-    }
+    UsersModel add token
 
-    render.json(Map("token" -> token)).toFuture
+    val response = Map("token" -> token)
+
+    render.status(201).json(response).toFuture
   }
 
   /**
    * Method only for debugging - will return list of users
    *
-   * curl http://localhost:7070/api/user
+   * curl -i -X GET -G http://localhost:7070/api/users -d limit={limit.?}
    */
   get("/api/users") { request =>
-    render.json(UsersModel.getAll).toFuture
+    val limit = request.params.getInt("limit")
+    val users = UsersModel.getAll(limit)
+
+    render.json(users).toFuture
   }
 }

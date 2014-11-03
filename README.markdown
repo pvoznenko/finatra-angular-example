@@ -52,39 +52,47 @@ You can use [cURL](http://curl.haxx.se/) to test application.
 You can get authentication token for your communication with server's private API by querying following URL:
 
 ```
-$ curl http://localhost:7070/api/user/authentication
+$ curl -i -X POST http://localhost:7070/api/users/authentication
 ```
 
-You can also can check list of authenticated users by following URL (this part made only for debugging):
+You will get response status ```201``` - this this method will fake user creation.
+
+You can also can check list of authenticated users by following URL (this part made only for debugging, limit is 
+optional parameter, default 10. If limit < 0 then you will get all data):
 
 ```
-$ curl http://localhost:7070/api/user
+$ curl -i -X GET -G http://localhost:7070/api/users -d limit={limit.?}
 ```
+
+You should get response code ```200```.
 
 #### /api/product
 
-On following URL you can get list of available products:
+On following URL you can get list of available products (limit is optional parameter, default 10. 
+If limit < 0 then you will get all data):
  
 ```
-curl http://localhost:7070/api/product
+curl -i -X GET -G http://localhost:7070/api/products -d limit={limit.?}
 ```
+
+You should get response code ```200```.
 
 ### Private API
 
-For this part of API you need to have authentication toking provided by ```/api/user/authentication```
+For this part of API you need to have authentication toking provided by ```/api/users/authentication```.
 
 #### /api/cart
 
 You can get list of all products currently in your basket:
 
 ```
-$ curl -X GET -G http://localhost:7070/api/cart -d token={token}
+$ curl -i -X GET -G http://localhost:7070/api/cart -d token={token}
 ```
 
 Add new product to your basket:
 
 ```
-$ curl -X PUT http://localhost:7070/api/cart -d productId={product_id} -d token={token}
+$ curl -i -X PUT http://localhost:7070/api/cart -d productId={product_id} -d token={token}
 ```
 
 **Please note** that by adding the same product multiple time into your basket, you will just increase it quantity.
@@ -92,7 +100,7 @@ $ curl -X PUT http://localhost:7070/api/cart -d productId={product_id} -d token=
 You can update quantity of product that is already in your basket:
 
 ```
-$ curl -X POST http://localhost:7070/api/cart -d productId={product_id} -d token={token} -d quantity={quantity.?}
+$ curl -i -X POST http://localhost:7070/api/cart -d productId={product_id} -d token={token} -d quantity={quantity.?}
 ```
 
 **Please note** that parameter ```quantity``` is optional, you can set persist amount of product by specifying 
@@ -101,7 +109,7 @@ it or just leave it empty and quantity of product will be increased by 1.
 You can remove product from your cart using following URL:
 
 ```
-$ curl -X DELETE -G http://localhost:7070/api/cart -d token={token} -d productId={product_id}
+$ curl -i -X DELETE -G http://localhost:7070/api/cart -d token={token} -d productId={product_id}
 ```
 
 ## Known Issues

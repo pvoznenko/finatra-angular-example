@@ -8,9 +8,12 @@ class ProductsApi extends Controller {
   /**
    * Get list of available products in our shop
    *
-   * curl http://localhost:7070/api/product
+   * curl -i -X GET -G http://localhost:7070/api/products -d limit={limit.?}
    */
   get("/api/products") { request =>
-    render.json(ProductsModel.getAll).toFuture
+    val limit = request.params.getInt("limit")
+    val products = ProductsModel.getAll(limit)
+
+    render.json(products).toFuture
   }
 }

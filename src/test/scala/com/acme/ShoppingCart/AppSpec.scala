@@ -52,9 +52,14 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (200)
   }
 
-  "GET /api/users/authentication" should "respond 200" in {
-    get("/api/users/authentication")
+  "POST /api/users/authentication" should "respond 201" in {
+    post("/api/users/authentication")
     response.body.contains ("token") should equal(true)
+    response.code   should equal (201)
+  }
+
+  "GET /api/users" should "respond 200" in {
+    get("/api/users")
     response.code   should equal (200)
   }
 
@@ -65,8 +70,8 @@ class AppSpec extends FlatSpecHelper {
   }
 
   def getAuthToken = {
-    get("/api/users/authentication")
-    response.code   should equal (200)
+    post("/api/users/authentication")
+    response.code   should equal (201)
     JSON.parseFull(response.body) match {
       case Some(map: Map[String, String]) => map
       case _ => Map("" -> "")

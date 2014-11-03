@@ -11,7 +11,7 @@ object UsersModel {
 
   def add(token: String) = DB.connection.withSession{ implicit session => users += User(token) }
 
-  def getAll = DB.connection.withSession{ implicit session => users.run }
+  def getAll(limit: Option[Int]) = DB.connection.withSession{ implicit session => users.take(limit.getOrElse(10)).run }
 
   def getByToken(token: String) = DB.connection.withSession { implicit session =>
     val userId = users.filter(_.token === token).map(_.id).firstOption.getOrElse(-1)

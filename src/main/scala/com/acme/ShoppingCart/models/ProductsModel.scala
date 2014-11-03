@@ -14,5 +14,5 @@ object ProductsModel {
     products += Product("Surface", 750)
   }
 
-  def getAll = DB.connection.withSession { implicit session => products.run }
+  def getAll(limit: Option[Int]) = DB.connection.withSession { implicit session => products.take(limit.getOrElse(10)).run }
 }
