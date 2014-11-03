@@ -47,7 +47,7 @@ You can use [cURL](http://curl.haxx.se/) to test application.
 
 ### Public API
 
-#### /api/user
+#### /api/users
 
 You can get authentication token for your communication with server's private API by querying following URL:
 
@@ -66,7 +66,7 @@ $ curl -i -X GET -G http://localhost:7070/api/users -d limit={limit.?}
 
 You should get response code ```200```.
 
-#### /api/product
+#### /api/products
 
 On following URL you can get list of available products (limit is optional parameter, default 10. 
 If limit < 0 then you will get all data):
@@ -81,18 +81,18 @@ You should get response code ```200```.
 
 For this part of API you need to have authentication toking provided by ```/api/users/authentication```.
 
-#### /api/cart
+#### /api/cart/products
 
 You can get list of all products currently in your basket:
 
 ```
-$ curl -i -X GET -G http://localhost:7070/api/cart -d token={token}
+$ curl -i -X GET -G http://localhost:7070/api/cart/products -d token={token}
 ```
 
 Add new product to your basket:
 
 ```
-$ curl -i -X PUT http://localhost:7070/api/cart -d productId={product_id} -d token={token}
+$ curl -X PUT http://localhost:7070/api/cart/products/{product_id} -d token={token}
 ```
 
 **Please note** that by adding the same product multiple time into your basket, you will just increase it quantity.
@@ -100,7 +100,7 @@ $ curl -i -X PUT http://localhost:7070/api/cart -d productId={product_id} -d tok
 You can update quantity of product that is already in your basket:
 
 ```
-$ curl -i -X POST http://localhost:7070/api/cart -d productId={product_id} -d token={token} -d quantity={quantity.?}
+$ curl -i -X POST http://localhost:7070/api/cart/products -d productId={product_id} -d token={token} -d quantity={quantity.?}
 ```
 
 **Please note** that parameter ```quantity``` is optional, you can set persist amount of product by specifying 
@@ -109,7 +109,7 @@ it or just leave it empty and quantity of product will be increased by 1.
 You can remove product from your cart using following URL:
 
 ```
-$ curl -i -X DELETE -G http://localhost:7070/api/cart -d token={token} -d productId={product_id}
+$ curl -i -X DELETE -G http://localhost:7070/api/cart/products -d token={token} -d productId={product_id}
 ```
 
 ## Known Issues

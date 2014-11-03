@@ -3,14 +3,14 @@ package com.acme.ShoppingCart.controllers.Api
 import com.acme.ShoppingCart.models.{UsersModel, UserCartModel}
 import com.twitter.finatra.Controller
 
-class CartApi extends Controller {
+class CartProductsApi extends Controller {
 
   /**
    * Get all products for user
    *
-   * curl -X GET -G http://localhost:7070/api/cart -d token={token}
+   * curl -X GET -G http://localhost:7070/api/cart/products -d token={token}
    */
-  get("/api/cart") { request =>
+  get("/api/cart/products") { request =>
     val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
     render.json(UserCartModel.getUserProducts(userId)).toFuture
   }
@@ -18,11 +18,11 @@ class CartApi extends Controller {
   /**
    * Add new product to the user's shopping cart
    *
-   * curl -X PUT http://localhost:7070/api/cart -d productId={product_id} -d token={token}
+   * curl -X PUT http://localhost:7070/api/cart/products/{product_id} -d token={token}
    */
-  put("/api/cart") { request =>
+  put("/api/cart/products/:productId") { request =>
     val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
-    val productId = request.params.getInt("productId").get
+    val productId = request.routeParams.get("productId").get.toInt
     val product = UserCartModel.getUserProduct(userId, productId)
 
     if (product.isEmpty) UserCartModel.add(userId, productId)
@@ -34,9 +34,9 @@ class CartApi extends Controller {
   /**
    * Update information regarding user product in the shopping cart
    *
-   * curl -X POST http://localhost:7070/api/cart -d productId={product_id} -d token={token} -d quantity={quantity.?}
+   * curl -X POST http://localhost:7070/api/cart/products -d productId={product_id} -d token={token} -d quantity={quantity.?}
    */
-  post("/api/cart") { request =>
+  post("/api/cart/products") { request =>
     val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
     val productId = request.params.getInt("productId").get
     val quantity = request.params.getInt("quantity")
@@ -51,9 +51,9 @@ class CartApi extends Controller {
   /**
    * Remove item from user's cart
    *
-   * curl -X DELETE -G http://localhost:7070/api/cart -d token={token} -d productId={product_id}
+   * curl -X DELETE -G http://localhost:7070/api/cart/products -d token={token} -d productId={product_id}
    */
-  delete("/api/cart") { request =>
+  delete("/api/cart/products") { request =>
     val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
     val productId = request.params.getInt("productId").get
 
