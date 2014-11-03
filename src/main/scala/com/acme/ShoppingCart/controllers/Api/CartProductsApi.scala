@@ -61,8 +61,8 @@ class CartProductsApi extends Controller {
 
     val removedRowsCount = UserCartModel remove (userId, productId)
 
-    if (removedRowsCount > 0) render.status(204).toFuture
-    else throw new BadRequest("trying to remove product from user's shopping cart that is not there!")
+    if (removedRowsCount <= 0) throw new BadRequest("trying to remove product from user's shopping cart that is not there!")
+    else render.status(204).toFuture
   }
 
   private [this] def getUserId(request: Request) = {

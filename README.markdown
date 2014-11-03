@@ -127,6 +127,9 @@ For `Private API` if parameter `token` is missing you will get response with cod
 For `Private API` if parameter `token` is wrong, there are no authorized user in the system with provided token, you 
 will get response with code `401` and message `Not Authorized!`.
 
+For `Private API` if you provided parameter `productId` of not existing product, you will get response with code `400` 
+and message `Product with provided id '{productId}' is not exist!`.
+
 For methods that are not in API, you will get response with code `404` and message `Not Found`.
 
 For all uncovered exceptions you will get response with code `500`.

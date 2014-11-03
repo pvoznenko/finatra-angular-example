@@ -178,6 +178,12 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (400)
   }
 
+  "DELETE /api/cart/products/12" should "respond 400 with message `Product with provided id '12' is not exist!`" in {
+    delete("/api/cart/products/12", getAuthToken)
+    response.body   should equal ("Product with provided id '12' is not exist!")
+    response.code   should equal (400)
+  }
+
   "DELETE /api/cart/products/1" should "respond 204 and remove product" in {
     val token = getAuthToken
 
