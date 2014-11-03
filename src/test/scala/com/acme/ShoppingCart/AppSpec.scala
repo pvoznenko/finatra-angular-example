@@ -34,14 +34,14 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (401)
   }
 
-  "POST /api/cart/products" should "respond 401" in {
-    post("/api/cart/products")
+  "POST /api/cart/products/1" should "respond 401" in {
+    post("/api/cart/products/1")
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
   }
 
-  "DELETE /api/cart/products" should "respond 401" in {
-    delete("/api/cart/products")
+  "DELETE /api/cart/products/1" should "respond 401" in {
+    delete("/api/cart/products/1")
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
   }
@@ -117,7 +117,7 @@ class AppSpec extends FlatSpecHelper {
     put("/api/cart/products/1", token)
     response.code   should equal (200)
 
-    post("/api/cart/products", token ++ Map("productId" -> "1"))
+    post("/api/cart/products/1", token)
     response.code   should equal (200)
 
     get("/api/cart/products", token)
@@ -130,25 +130,25 @@ class AppSpec extends FlatSpecHelper {
     put("/api/cart/products/1", token)
     response.code   should equal (200)
 
-    post("/api/cart/products", token ++ Map("productId" -> "1", "quantity" -> "10"))
+    post("/api/cart/products/1", token ++ Map("quantity" -> "10"))
     response.code   should equal (200)
 
     get("/api/cart/products", token)
     JSON.parseFull(response.body).get should equal(TestData.updatedProduct2)
   }
 
-  "Authorized user update product without product id" should "get error 500" in {
+  "Authorized user update product without product id" should "get error 404" in {
     val token = getAuthToken
 
     put("/api/cart/products/1", token)
     response.code   should equal (200)
 
     post("/api/cart/products", token)
-    response.code   should equal (500)
+    response.code   should equal (404)
   }
 
   "Authorized user update product that he do not have" should "get error 500" in {
-    post("/api/cart/products", getAuthToken ++ Map("productId" -> "1"))
+    post("/api/cart/products/1", getAuthToken)
     response.code   should equal (500)
   }
 
@@ -161,15 +161,15 @@ class AppSpec extends FlatSpecHelper {
     get("/api/cart/products", token)
     JSON.parseFull(response.body).get should equal(TestData.firstProduct)
 
-    delete("/api/cart/products", token ++ Map("productId" -> "1"))
+    delete("/api/cart/products/1", token)
     response.code   should equal (200)
 
     get("/api/cart/products", token)
     JSON.parseFull(response.body).get should equal(List())
   }
 
-  "Authorized user remove product without product id" should "get error 500" in {
+  "Authorized user remove product without product id" should "get error 404" in {
     delete("/api/cart/products", getAuthToken)
-    response.code   should equal (500)
+    response.code   should equal (404)
   }
 }

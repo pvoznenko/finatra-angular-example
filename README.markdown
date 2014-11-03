@@ -100,7 +100,7 @@ $ curl -X PUT http://localhost:7070/api/cart/products/{product_id} -d token={tok
 You can update quantity of product that is already in your basket:
 
 ```
-$ curl -i -X POST http://localhost:7070/api/cart/products -d productId={product_id} -d token={token} -d quantity={quantity.?}
+$ curl -i -X POST http://localhost:7070/api/cart/products/{product_id} -d token={token} -d quantity={quantity.?}
 ```
 
 **Please note** that parameter ```quantity``` is optional, you can set persist amount of product by specifying 
@@ -109,7 +109,7 @@ it or just leave it empty and quantity of product will be increased by 1.
 You can remove product from your cart using following URL:
 
 ```
-$ curl -i -X DELETE -G http://localhost:7070/api/cart/products -d token={token} -d productId={product_id}
+$ curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -d token={token}
 ```
 
 ## Known Issues

@@ -34,11 +34,11 @@ class CartProductsApi extends Controller {
   /**
    * Update information regarding user product in the shopping cart
    *
-   * curl -X POST http://localhost:7070/api/cart/products -d productId={product_id} -d token={token} -d quantity={quantity.?}
+   * curl -X POST http://localhost:7070/api/cart/products/{product_id} -d token={token} -d quantity={quantity.?}
    */
-  post("/api/cart/products") { request =>
+  post("/api/cart/products/:productId") { request =>
     val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
-    val productId = request.params.getInt("productId").get
+    val productId = request.routeParams.get("productId").get.toInt
     val quantity = request.params.getInt("quantity")
     val product = UserCartModel.getUserProduct(userId, productId)
 
@@ -51,11 +51,11 @@ class CartProductsApi extends Controller {
   /**
    * Remove item from user's cart
    *
-   * curl -X DELETE -G http://localhost:7070/api/cart/products -d token={token} -d productId={product_id}
+   * curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -d token={token}
    */
-  delete("/api/cart/products") { request =>
+  delete("/api/cart/products/:productId") { request =>
     val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
-    val productId = request.params.getInt("productId").get
+    val productId = request.routeParams.get("productId").get.toInt
 
     UserCartModel.remove(userId, productId)
 
