@@ -1,7 +1,9 @@
 package com.acme.ShoppingCart.controllers.Api
 
-import com.acme.ShoppingCart.models.{UsersModel, UserCartModel}
+import com.acme.ShoppingCart.exception.{BadRequest, Unauthorized}
+import com.acme.ShoppingCart.models.{ProductsModel, UsersModel, UserCartModel}
 import com.twitter.finatra.Controller
+import com.twitter.finatra.Request
 
 class CartProductsApi extends Controller {
 
@@ -54,11 +56,35 @@ class CartProductsApi extends Controller {
    * curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -d token={token}
    */
   delete("/api/cart/products/:productId") { request =>
-    val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
+    val userId = getUserId(request)
+    val productId = getProductId(request)
+
+    val removedRowsCount = UserCartModel remove (userId, productId)
+
+    if (removedRowsCount > 0) render.status(204).toFuture
+    else throw new BadRequest("trying to remove product from user's shopping cart that is not there!")
+  }
+
+  private [this] def getUserId(request: Request) = {
+    def getAuthTokenParam(request: Request) = {
+      val token = request.params.getOrElse("token", null)
+
+      if (token == null) throw new BadRequest("Parameter 'token' is required!")
+      else token
+    }
+
+    val token = getAuthTokenParam(request)
+    val users = UsersModel getUserByToken token
+
+    if (users.isEmpty) throw new Unauthorized
+    else users.head.id.get
+  }
+
+  private [this] def getProductId(request: Request) = {
     val productId = request.routeParams.get("productId").get.toInt
+    val products = ProductsModel getProductById productId
 
-    UserCartModel.remove(userId, productId)
-
-    render.json(Map("response" -> "done")).toFuture
+    if (products.isEmpty) throw new BadRequest("Product with provided id '" ++ productId.toString ++ "' is not exist!")
+    else products.head.id.get
   }
 }

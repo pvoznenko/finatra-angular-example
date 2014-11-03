@@ -1,7 +1,7 @@
 package com.acme.ShoppingCart.controllers
 
 import com.twitter.finatra.Controller
-import com.acme.ShoppingCart.exception.Unauthorized
+import com.acme.ShoppingCart.exception.{BadRequest, Unauthorized}
 
 class IndexApp extends Controller {
 
@@ -14,20 +14,23 @@ class IndexApp extends Controller {
     render.static("index.html").toFuture
   }
 
-  /**
-   * Custom 404s
-   *
-   * curl http://localhost:7070/notfound
-   */
-  notFound { request =>
-    render.status(404).plain("not found").toFuture
-  }
-
   error { request =>
     request.error match {
-      case Some(e:Unauthorized) =>
-        log.error(request.error.toString, "Not Authorized!")
-        render.status(401).plain("Not Authorized!").toFuture
+      case Some(e: Unauthorized) =>
+        val message = "Not Authorized!"
+        log.error(request.error.toString, message)
+        render.status(401).plain(message).toFuture
+
+      case Some(e: IllegalArgumentException) =>
+        val message = "Illegal Argument!"
+        log.error(request.error.toString, message)
+        render.status(400).plain(message).toFuture
+
+      case Some(e: BadRequest) =>
+        val message = if (e.getMessage.length > 0) e.getMessage else "Bad Request!"
+        log.error(request.error.toString, message)
+        render.status(400).plain(message).toFuture
+
       case _ =>
         log.error(request.error.toString, "Something went wrong!")
         render.status(500).plain("Something went wrong!").toFuture

@@ -19,4 +19,8 @@ object UsersModel {
     if (userId < 0) throw new Unauthorized
     else userId
   }
+
+  def getUserByToken(token: String) = DB.connection.withSession { implicit session =>
+    users.filter(_.token === token).run
+  }
 }

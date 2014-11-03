@@ -15,4 +15,6 @@ object ProductsModel {
   }
 
   def getAll(limit: Option[Int]) = DB.connection.withSession { implicit session => products.take(limit.getOrElse(10)).run }
+
+  def getProductById(id: Int) = DB.connection.withSession { implicit session => products.filter(_.id === id).run }
 }

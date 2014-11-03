@@ -16,9 +16,13 @@ class AppSpec extends FlatSpecHelper {
   server.register(new ProductsApi())
   server.register(new CartProductsApi())
 
-  "GET /notfound" should "respond 404" in {
-    get("/notfound")
-    response.body   should equal ("not found")
+  /**
+   * Overall tests
+   */
+
+  "GET /not-found" should "respond 404" in {
+    get("/not-found")
+    response.body   should equal ("Not Found")
     response.code   should equal (404)
   }
 
@@ -36,12 +40,6 @@ class AppSpec extends FlatSpecHelper {
 
   "POST /api/cart/products/1" should "respond 401" in {
     post("/api/cart/products/1")
-    response.body   should equal ("Not Authorized!")
-    response.code   should equal (401)
-  }
-
-  "DELETE /api/cart/products/1" should "respond 401" in {
-    delete("/api/cart/products/1")
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
   }
@@ -152,7 +150,35 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (500)
   }
 
-  "Authorized user" should "remove product" in {
+  /**
+   * Deletion tests
+   */
+
+  "DELETE /api/cart/products/1" should "respond 400 with message `Parameter 'token' is required!`" in {
+    delete("/api/cart/products/1")
+    response.body   should equal ("Parameter 'token' is required!")
+    response.code   should equal (400)
+  }
+
+  "DELETE /api/cart/products/1" should "respond 401 with message `Not Authorized!`" in {
+    delete("/api/cart/products/1", Map("token" -> ""))
+    response.body   should equal ("Not Authorized!")
+    response.code   should equal (401)
+  }
+
+  "DELETE /api/cart/products/abc" should "respond 400 with message `Illegal Argument!`" in {
+    delete("/api/cart/products/abc", getAuthToken)
+    response.body   should equal ("Illegal Argument!")
+    response.code   should equal (400)
+  }
+
+  "DELETE /api/cart/products/1" should "respond 400 with message `trying to remove product from user's shopping cart that is not there!`" in {
+    delete("/api/cart/products/1", getAuthToken)
+    response.body   should equal ("trying to remove product from user's shopping cart that is not there!")
+    response.code   should equal (400)
+  }
+
+  "DELETE /api/cart/products/1" should "respond 204 and remove product" in {
     val token = getAuthToken
 
     put("/api/cart/products/1", token)
@@ -162,14 +188,9 @@ class AppSpec extends FlatSpecHelper {
     JSON.parseFull(response.body).get should equal(TestData.firstProduct)
 
     delete("/api/cart/products/1", token)
-    response.code   should equal (200)
+    response.code   should equal (204)
 
     get("/api/cart/products", token)
     JSON.parseFull(response.body).get should equal(List())
-  }
-
-  "Authorized user remove product without product id" should "get error 404" in {
-    delete("/api/cart/products", getAuthToken)
-    response.code   should equal (404)
   }
 }

@@ -55,7 +55,7 @@ You can get authentication token for your communication with server's private AP
 $ curl -i -X POST http://localhost:7070/api/users/authentication
 ```
 
-You will get response status ```201``` - this this method will fake user creation.
+You will get response status `201` - because this method will fake user creation.
 
 You can also can check list of authenticated users by following URL (this part made only for debugging, limit is 
 optional parameter, default 10. If limit < 0 then you will get all data):
@@ -64,7 +64,7 @@ optional parameter, default 10. If limit < 0 then you will get all data):
 $ curl -i -X GET -G http://localhost:7070/api/users -d limit={limit.?}
 ```
 
-You should get response code ```200```.
+You should get response code `200`.
 
 #### /api/products
 
@@ -75,11 +75,11 @@ If limit < 0 then you will get all data):
 curl -i -X GET -G http://localhost:7070/api/products -d limit={limit.?}
 ```
 
-You should get response code ```200```.
+You should get response code `200`.
 
 ### Private API
 
-For this part of API you need to have authentication toking provided by ```/api/users/authentication```.
+For this part of API you need to have authentication toking provided by `/api/users/authentication`.
 
 #### /api/cart/products
 
@@ -111,6 +111,25 @@ You can remove product from your cart using following URL:
 ```
 $ curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -d token={token}
 ```
+
+If everything is OK you should get response code `204`.
+
+If you trying to remove product that is not in user's shopping cart you will get response code `400` with following 
+message `trying to remove product from user's shopping cart that is not there!`.
+
+### Exceptions
+
+By providing wrong type of value, for example for `productId` instead of `Int` you provided `String` you will get response 
+with code `400` and message `Illegal Argument!`.
+
+For `Private API` if parameter `token` is missing you will get response with code `400` and message `Parameter 'token' is required!`.
+
+For `Private API` if parameter `token` is wrong, there are no authorized user in the system with provided token, you 
+will get response with code `401` and message `Not Authorized!`.
+
+For methods that are not in API, you will get response with code `404` and message `Not Found`.
+
+For all uncovered exceptions you will get response with code `500`.
 
 ## Known Issues
 
