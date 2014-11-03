@@ -89,22 +89,37 @@ You can get list of all products currently in your basket:
 $ curl -i -X GET -G http://localhost:7070/api/cart/products -d token={token}
 ```
 
+* If everything is OK you should get response code `200`.
+
+##### Create
+
 Add new product to your basket:
 
 ```
 $ curl -X PUT http://localhost:7070/api/cart/products/{product_id} -d token={token}
 ```
 
-**Please note** that by adding the same product multiple time into your basket, you will just increase it quantity.
+* If everything is OK you should get response code `201`;
+* If you trying to add product that is already in your cart you will get response code `409` with following 
+message `Products is already in user's cart!`.
+
+##### Update
 
 You can update quantity of product that is already in your basket:
 
 ```
-$ curl -i -X POST http://localhost:7070/api/cart/products/{product_id} -d token={token} -d quantity={quantity.?}
+$ curl -i -X POST http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -d token={token}
 ```
 
-**Please note** that parameter ```quantity``` is optional, you can set persist amount of product by specifying 
-it or just leave it empty and quantity of product will be increased by 1. 
+* If everything is OK you should get response code `204`;
+* Additional to Exceptions that described in section `Exceptions` here we have validation on parameter `quantity`, if it 
+is missing you will get response with code `400` and message `Parameter 'quantity' is required!`;
+* Also parameter `quantity` should be greater then 0, otherwise you will get response code `400` with following 
+message `Quantity should be positive value!`;
+* If you trying to update product that is not in user's shopping cart you will get response code `400` with following 
+message `Product should be in user's cart!`.
+
+##### Delete
 
 You can remove product from your cart using following URL:
 
@@ -112,27 +127,21 @@ You can remove product from your cart using following URL:
 $ curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -d token={token}
 ```
 
-If everything is OK you should get response code `204`.
-
-If you trying to remove product that is not in user's shopping cart you will get response code `400` with following 
+* If everything is OK you should get response code `204`;
+* If you trying to remove product that is not in user's shopping cart you will get response code `400` with following 
 message `trying to remove product from user's shopping cart that is not there!`.
 
 ### Exceptions
 
-By providing wrong type of value, for example for `productId` instead of `Int` you provided `String` you will get response 
-with code `400` and message `Illegal Argument!`.
-
-For `Private API` if parameter `token` is missing you will get response with code `400` and message `Parameter 'token' is required!`.
-
-For `Private API` if parameter `token` is wrong, there are no authorized user in the system with provided token, you 
-will get response with code `401` and message `Not Authorized!`.
-
-For `Private API` if you provided parameter `productId` of not existing product, you will get response with code `400` 
-and message `Product with provided id '{productId}' is not exist!`.
-
-For methods that are not in API, you will get response with code `404` and message `Not Found`.
-
-For all uncovered exceptions you will get response with code `500`.
+* By providing wrong type of value, for example for `productId` instead of `Int` you provided `String` you will get response 
+with code `400` and message `Illegal Argument!`;
+* For `Private API` if parameter `token` is missing you will get response with code `400` and message `Parameter 'token' is required!`;
+* For `Private API` if parameter `token` is wrong, there are no authorized user in the system with provided token, you 
+will get response with code `401` and message `Not Authorized!`;
+* For `Private API` if you provided parameter `productId` of not existing product, you will get response with code `400` 
+and message `Product with provided id '{productId}' is not exist!`;
+* For methods that are not in API, you will get response with code `404` and message `Not Found`;
+* For all uncovered exceptions you will get response with code `500`.
 
 ## Known Issues
 
@@ -146,7 +155,7 @@ For all uncovered exceptions you will get response with code `500`.
 ```
 Issue reported in following ticket: [https://github.com/twitter/finatra/issues/133](https://github.com/twitter/finatra/issues/133)
 
-Second one is warning durring tests ```$ sbt test```
+Second one is warning during tests ```$ sbt test```
 
 ```
 [warn] /Users/pavlo/Projects/shopping-cart/src/test/scala/com/acme/ShoppingCart/AppSpec.scala:71: non-variable type argument String in type pattern scala.collection.Map[String,String] is unchecked since it is eliminated by erasure

@@ -11,28 +11,19 @@ object UserCartModel {
   def add(userId: Int, productId: Int) = DB.connection.withSession{ implicit session => userCart += Cart(userId, productId, 1) }
 
   def getUserProducts(userId: Int) = DB.connection.withSession { implicit session =>
-    val q = for {
-      uc <- userCart if uc.userId === userId
-      p <- TableQuery[Products] if uc.productId === p.id
-    } yield (p.id, p.name, p.price, uc.quantity)
+    val query = for {
+      userCart <- userCart if userCart.userId === userId
+      product <- TableQuery[Products] if userCart.productId === product.id
+    } yield (product.id, product.name, product.price, userCart.quantity)
 
-    q.list.map {case (id, name, price, quantity) => Map("id" -> id, "name" -> name, "price" -> price, "quantity" -> quantity)}
+    query.list.map { case (id, name, price, quantity) => Map("id" -> id, "name" -> name, "price" -> price, "quantity" -> quantity) }
   }
 
   def getUserProduct(userId: Int, productId: Int) = DB.connection.withSession { implicit session => getByUserAndProduct(userId, productId).run }
 
-  def updateProductQuantity(userId: Int, productId: Int, amount: Option[Int] = None) = DB.connection.withSession { implicit session =>
+  def updateProductQuantity(userId: Int, productId: Int, quantity: Int) = DB.connection.withSession { implicit session =>
     val query = getByUserAndProduct(userId, productId).map(_.quantity)
-
-    if (amount.isDefined) {
-      val quantity = amount.getOrElse(-1)
-      if (quantity < 0) quantity
-      else query.update(quantity)
-    } else {
-      val quantity = query.firstOption.getOrElse(-1)
-      if (quantity < 0) quantity
-      else query.update(quantity + 1)
-    }
+    query.update(quantity)
   }
 
   def remove(userId: Int, productId: Int) = DB.connection.withSession { implicit session => getByUserAndProduct(userId, productId).delete }

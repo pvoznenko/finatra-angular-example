@@ -1,7 +1,7 @@
 package com.acme.ShoppingCart.controllers
 
 import com.twitter.finatra.Controller
-import com.acme.ShoppingCart.exception.{BadRequest, Unauthorized}
+import com.acme.ShoppingCart.exception.{Conflict, BadRequest, Unauthorized}
 
 class IndexApp extends Controller {
 
@@ -30,6 +30,11 @@ class IndexApp extends Controller {
         val message = if (e.getMessage.length > 0) e.getMessage else "Bad Request!"
         log.error(request.error.toString, message)
         render.status(400).plain(message).toFuture
+
+      case Some(e: Conflict) =>
+        val message = if (e.getMessage.length > 0) e.getMessage else "Conflict!"
+        log.error(request.error.toString, message)
+        render.status(409).plain(message).toFuture
 
       case _ =>
         log.error(request.error.toString, "Something went wrong!")

@@ -1,11 +1,11 @@
 package com.acme.ShoppingCart.controllers.Api
 
-import com.acme.ShoppingCart.exception.BadRequest
-import com.acme.ShoppingCart.models.{UsersModel, UserCartModel}
-import com.acme.ShoppingCart.traits.ParamsValidation
+import com.acme.ShoppingCart.exception.{Conflict, BadRequest}
+import com.acme.ShoppingCart.models.UserCartModel
+import com.acme.ShoppingCart.traits.{Users, Products, UserCart}
 import com.twitter.finatra.Controller
 
-class CartProductsApi extends Controller with ParamsValidation {
+class CartProductsApi extends Controller with Users with Products with UserCart {
 
   /**
    * Get all products for user
@@ -13,8 +13,10 @@ class CartProductsApi extends Controller with ParamsValidation {
    * curl -X GET -G http://localhost:7070/api/cart/products -d token={token}
    */
   get("/api/cart/products") { request =>
-    val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
-    render.json(UserCartModel.getUserProducts(userId)).toFuture
+    val userId = getUserId(request)
+    val products = UserCartModel getUserProducts userId
+
+    render.json(products).toFuture
   }
 
   /**
@@ -23,31 +25,35 @@ class CartProductsApi extends Controller with ParamsValidation {
    * curl -X PUT http://localhost:7070/api/cart/products/{product_id} -d token={token}
    */
   put("/api/cart/products/:productId") { request =>
-    val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
-    val productId = request.routeParams.get("productId").get.toInt
-    val product = UserCartModel.getUserProduct(userId, productId)
+    val userId = getUserId(request)
+    val productId = getProductId(request)
 
-    if (product.isEmpty) UserCartModel.add(userId, productId)
-    else UserCartModel.updateProductQuantity(userId, productId)
+    isProductInUserCart(productId, userId) match {
+      case false =>
+        UserCartModel add (userId, productId)
+        render.status(201).json(Map("rel" -> ("/api/cart/products/" ++ productId.toString))).toFuture
 
-    render.json(Map("response" -> "done")).toFuture
+      case _ => throw new Conflict("Products is already in user's cart!")
+    }
   }
 
   /**
    * Update information regarding user product in the shopping cart
    *
-   * curl -X POST http://localhost:7070/api/cart/products/{product_id} -d token={token} -d quantity={quantity.?}
+   * curl -X POST http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -d token={token}
    */
-  post("/api/cart/products/:productId") { request =>
-    val userId = UsersModel.getByToken(request.params.getOrElse("token", null))
-    val productId = request.routeParams.get("productId").get.toInt
-    val quantity = request.params.getInt("quantity")
-    val product = UserCartModel.getUserProduct(userId, productId)
+  post("/api/cart/products/:productId/quantity/:quantity") { request =>
+    val userId = getUserId(request)
+    val productId = getProductId(request)
+    val quantity = getProductQuantity(request)
 
-    if (product.isEmpty) throw new Exception("You can not update unexisting product!")
-    else UserCartModel.updateProductQuantity(userId, productId, quantity)
+    isProductInUserCart(productId, userId) match {
+      case true =>
+        val data = UserCartModel updateProductQuantity (userId, productId, quantity)
+        render.status(204).json(Map("data" -> data)).toFuture
 
-    render.json(Map("response" -> "done")).toFuture
+      case _ => throw new BadRequest("Product should be in user's cart!")
+    }
   }
 
   /**
