@@ -7,7 +7,7 @@ import com.twitter.finatra.Request
 trait Users extends ParamsValidation {
   def getUserId(request: Request) =
     try {
-      val token = getParam(request.params, "token")
+      val token = getParam(request.headerMap, "token")
 
       UsersModel getUserByToken token match {
         case x +: xs => x.id.get

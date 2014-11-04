@@ -67,13 +67,13 @@ class AppSpec extends FlatSpecHelper {
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
 
-    get("/api/cart/products", Map("token" -> ""))
+    get("/api/cart/products", Map(), Map("token" -> ""))
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
   }
 
   "GET /api/cart/products" should "respond 200" in {
-    get("/api/cart/products", getAuthToken)
+    get("/api/cart/products", Map(), getAuthToken)
     response.code   should equal (200)
   }
 
@@ -86,25 +86,25 @@ class AppSpec extends FlatSpecHelper {
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
 
-    put("/api/cart/products/1", Map("token" -> ""))
+    put("/api/cart/products/1", Map(), Map("token" -> ""))
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
   }
 
   "PUT /api/cart/products/abc" should "respond 400 with message `Illegal Argument!`" in {
-    put("/api/cart/products/abc", getAuthToken)
+    put("/api/cart/products/abc", Map(), getAuthToken)
     response.body   should equal ("Illegal Argument!")
     response.code   should equal (400)
   }
 
   "PUT /api/cart/products/12" should "respond 404 with message `Product with provided id '12' is not exist!`" in {
-    put("/api/cart/products/12", getAuthToken)
+    put("/api/cart/products/12", Map(), getAuthToken)
     response.body   should equal ("Product with provided id '12' is not exist!")
     response.code   should equal (404)
   }
 
   def addProductWithId1 (token: Map[String, String]) = {
-    put("/api/cart/products/1", token)
+    put("/api/cart/products/1", Map(), token)
     response.code   should equal (201)
     JSON.parseFull(response.body).get should equal(TestData.addedProduct)
   }
@@ -117,7 +117,7 @@ class AppSpec extends FlatSpecHelper {
     val token = getAuthToken
     addProductWithId1(token)
 
-    put("/api/cart/products/1", token)
+    put("/api/cart/products/1", Map(), token)
     response.body   should equal ("Products is already in user's cart!")
     response.code   should equal (409)
   }
@@ -131,37 +131,37 @@ class AppSpec extends FlatSpecHelper {
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
 
-    put("/api/cart/products/1/quantity/1", Map("token" -> ""))
+    put("/api/cart/products/1/quantity/1", Map(), Map("token" -> ""))
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
   }
 
   "PUT /api/cart/products/abc/quantity/1" should "respond 400 with message `Illegal Argument!`" in {
-    put("/api/cart/products/abc/quantity/1", getAuthToken)
+    put("/api/cart/products/abc/quantity/1", Map(), getAuthToken)
     response.body   should equal ("Illegal Argument!")
     response.code   should equal (400)
   }
 
   "PUT /api/cart/products/12/quantity/1" should "respond 404 with message `Product with provided id '12' is not exist!`" in {
-    put("/api/cart/products/12/quantity/1", getAuthToken)
+    put("/api/cart/products/12/quantity/1", Map(), getAuthToken)
     response.body   should equal ("Product with provided id '12' is not exist!")
     response.code   should equal (404)
   }
 
   "PUT /api/cart/products/1/quantity/abc" should "respond 400 with message `Illegal Argument!`" in {
-    put("/api/cart/products/1/quantity/abc", getAuthToken)
+    put("/api/cart/products/1/quantity/abc", Map(), getAuthToken)
     response.body   should equal ("Illegal Argument!")
     response.code   should equal (400)
   }
 
   "PUT /api/cart/products/1/quantity/-1" should "respond 400 with message `Quantity should be positive value!`" in {
-    put("/api/cart/products/1/quantity/-1", getAuthToken)
+    put("/api/cart/products/1/quantity/-1", Map(), getAuthToken)
     response.body   should equal ("Quantity should be positive value!")
     response.code   should equal (400)
   }
 
   "PUT /api/cart/products/1/quantity/1" should "respond 404 with message `Product should be in user's cart!" in {
-    put("/api/cart/products/1/quantity/1", getAuthToken)
+    put("/api/cart/products/1/quantity/1", Map(), getAuthToken)
     response.body   should equal ("Product should be in user's cart!")
     response.code   should equal (404)
   }
@@ -170,7 +170,7 @@ class AppSpec extends FlatSpecHelper {
     val token = getAuthToken
     addProductWithId1(token)
 
-    put("/api/cart/products/1/quantity/8", token)
+    put("/api/cart/products/1/quantity/8", Map(), token)
     response.code   should equal (204)
   }
 
@@ -183,25 +183,25 @@ class AppSpec extends FlatSpecHelper {
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
 
-    delete("/api/cart/products/1", Map("token" -> ""))
+    delete("/api/cart/products/1", Map(), Map("token" -> ""))
     response.body   should equal ("Not Authorized!")
     response.code   should equal (401)
   }
 
   "DELETE /api/cart/products/abc" should "respond 400 with message `Illegal Argument!`" in {
-    delete("/api/cart/products/abc", getAuthToken)
+    delete("/api/cart/products/abc", Map(), getAuthToken)
     response.body   should equal ("Illegal Argument!")
     response.code   should equal (400)
   }
 
   "DELETE /api/cart/products/1" should "respond 404 with message `trying to remove product from user's shopping cart that is not there!`" in {
-    delete("/api/cart/products/1", getAuthToken)
+    delete("/api/cart/products/1", Map(), getAuthToken)
     response.body   should equal ("trying to remove product from user's shopping cart that is not there!")
     response.code   should equal (404)
   }
 
   "DELETE /api/cart/products/12" should "respond 404 with message `Product with provided id '12' is not exist!`" in {
-    delete("/api/cart/products/12", getAuthToken)
+    delete("/api/cart/products/12", Map(), getAuthToken)
     response.body   should equal ("Product with provided id '12' is not exist!")
     response.code   should equal (404)
   }
@@ -209,16 +209,16 @@ class AppSpec extends FlatSpecHelper {
   "DELETE /api/cart/products/1" should "respond 204 and remove product" in {
     val token = getAuthToken
 
-    put("/api/cart/products/1", token)
+    put("/api/cart/products/1", Map(), token)
     response.code   should equal (201)
 
-    get("/api/cart/products", token)
+    get("/api/cart/products", Map(), token)
     JSON.parseFull(response.body).get should equal(TestData.firstProduct)
 
-    delete("/api/cart/products/1", token)
+    delete("/api/cart/products/1", Map(), token)
     response.code   should equal (204)
 
-    get("/api/cart/products", token)
+    get("/api/cart/products", Map(), token)
     JSON.parseFull(response.body).get should equal(List())
   }
 }

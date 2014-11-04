@@ -1,6 +1,6 @@
 package com.acme.ShoppingCart.controllers.Api
 
-import com.acme.ShoppingCart.exception.{NotFound, Conflict, BadRequest}
+import com.acme.ShoppingCart.exception.{NotFound, Conflict}
 import com.acme.ShoppingCart.models.UserCartModel
 import com.acme.ShoppingCart.traits.{Users, Products, UserCart}
 import com.twitter.finatra.Controller
@@ -10,7 +10,7 @@ class CartProductsApi extends Controller with Users with Products with UserCart 
   /**
    * Get all products for user
    *
-   * curl -X GET -G http://localhost:7070/api/cart/products -d token={token}
+   * curl -X GET -G http://localhost:7070/api/cart/products -H token:{token}
    */
   get("/api/cart/products") { request =>
     val userId = getUserId(request)
@@ -22,7 +22,7 @@ class CartProductsApi extends Controller with Users with Products with UserCart 
   /**
    * Add new product to the user's shopping cart
    *
-   * curl -X PUT http://localhost:7070/api/cart/products/{product_id} -d token={token}
+   * curl -X PUT http://localhost:7070/api/cart/products/{product_id} -H token:{token}
    */
   put("/api/cart/products/:productId") { request =>
     val userId = getUserId(request)
@@ -40,7 +40,7 @@ class CartProductsApi extends Controller with Users with Products with UserCart 
   /**
    * Update information regarding user product in the shopping cart
    *
-   * curl -X PUT http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -d token={token}
+   * curl -X PUT http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -H token:{token}
    */
   put("/api/cart/products/:productId/quantity/:quantity") { request =>
     val userId = getUserId(request)
@@ -59,7 +59,7 @@ class CartProductsApi extends Controller with Users with Products with UserCart 
   /**
    * Remove item from user's cart
    *
-   * curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -d token={token}
+   * curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -H token:{token}
    */
   delete("/api/cart/products/:productId") { request =>
     val userId = getUserId(request)

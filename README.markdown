@@ -80,13 +80,14 @@ You should get response code `200`.
 ### Private API
 
 For this part of API you need to have authentication toking provided by `/api/users/authentication`.
+You should pass token in header with key `token`.
 
 #### /api/cart/products
 
 You can get list of all products currently in your basket:
 
 ```
-$ curl -i -X GET -G http://localhost:7070/api/cart/products -d token={token}
+$ curl -i -X GET -G http://localhost:7070/api/cart/products -H token:{token}
 ```
 
 * If everything is OK you should get response code `200`.
@@ -96,7 +97,7 @@ $ curl -i -X GET -G http://localhost:7070/api/cart/products -d token={token}
 Add new product to your basket:
 
 ```
-$ curl -i -X PUT http://localhost:7070/api/cart/products/{product_id} -d token={token}
+$ curl -i -X PUT http://localhost:7070/api/cart/products/{product_id} -H token:{token}
 ```
 
 * If everything is OK you should get response code `201`;
@@ -111,7 +112,7 @@ message `Product with provided id '{productId}' is not exist!`.
 You can update quantity of product that is already in your basket:
 
 ```
-$ curl -i -X PUT http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -d token={token}
+$ curl -i -X PUT http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -H token:{token}
 ```
 
 * If everything is OK you should get response code `204`;
@@ -129,7 +130,7 @@ message `Product should be in user's cart!`.
 You can remove product from your cart using following URL:
 
 ```
-$ curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -d token={token}
+$ curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -H token:{token}
 ```
 
 * If everything is OK you should get response code `204`;
@@ -146,27 +147,6 @@ message `trying to remove product from user's shopping cart that is not there!`.
 will get response with code `401` and message `Not Authorized!`;
 * For methods that are not in API, you will get response with code `404` and message `Not Found`;
 * For all uncovered exceptions you will get response with code `500`.
-
-## Known Issues
-
-```$ sbt assembly``` will hangup with an error:
-
-```
-[error] (*:assembly) deduplicate: different file contents found in the following:
-[error] public/index.html
-[error] /Users/pavlo/.ivy2/cache/com.twitter/finatra_2.10/jars/finatra_2.10-1.5.2.jar:public/index.html
-[error] Total time: 7 s, completed Oct 23, 2014 12:26:51 PM
-```
-Issue reported in following ticket: [https://github.com/twitter/finatra/issues/133](https://github.com/twitter/finatra/issues/133)
-
-Second one is warning during tests ```$ sbt test```
-
-```
-[warn] /Users/pavlo/Projects/shopping-cart/src/test/scala/com/acme/ShoppingCart/AppSpec.scala:71: non-variable type argument String in type pattern scala.collection.Map[String,String] is unchecked since it is eliminated by erasure
-[warn]       case Some(map: Map[String, String]) => map
-[warn]                      ^
-[warn] one warning found
-```
 
 ## Copyright
 

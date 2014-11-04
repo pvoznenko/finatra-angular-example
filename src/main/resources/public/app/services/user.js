@@ -1,4 +1,4 @@
-angular.module('shoppingCart.site').factory('User', function () {
+angular.module('shoppingCart.site').factory('User', ['$http', function ($http) {
     var userToken = null;
 
     var methods = {
@@ -8,9 +8,11 @@ angular.module('shoppingCart.site').factory('User', function () {
          setUserToken: function (token) {
              userToken = token;
 
+             $http.defaults.headers.common['token'] = userToken;
+
              return methods;
          }
      };
 
     return methods;
-});
+}]);
