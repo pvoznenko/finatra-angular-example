@@ -8,7 +8,7 @@ angular.module('shoppingCart.site').factory("Cart", ['$resource', function(resou
             method: 'PUT'
         },
         save: {
-            method: 'POST',
+            method: 'PUT',
             url: 'api/cart/products/:productId/quantity/:quantity'
         }
     });

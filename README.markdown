@@ -55,7 +55,7 @@ You can get authentication token for your communication with server's private AP
 $ curl -i -X POST http://localhost:7070/api/users/authentication
 ```
 
-You will get response status `201` - because this method will fake user creation.
+You will get response status `201` - because this method will fake user creation and provide you with auth token for private API.
 
 You can also can check list of authenticated users by following URL (this part made only for debugging, limit is 
 optional parameter, default 10. If limit < 0 then you will get all data):
@@ -96,27 +96,32 @@ $ curl -i -X GET -G http://localhost:7070/api/cart/products -d token={token}
 Add new product to your basket:
 
 ```
-$ curl -X PUT http://localhost:7070/api/cart/products/{product_id} -d token={token}
+$ curl -i -X PUT http://localhost:7070/api/cart/products/{product_id} -d token={token}
 ```
 
 * If everything is OK you should get response code `201`;
 * If you trying to add product that is already in your cart you will get response code `409` with following 
-message `Products is already in user's cart!`.
+message `Products is already in user's cart!`;
+* Parameter `productId` should be integer otherwise you will get response with code `400` and message `Illegal Argument!`;
+* Parameter `productId` should be existing product in the market otherwise you will get response with code `404` and 
+message `Product with provided id '{productId}' is not exist!`.
 
 ##### Update
 
 You can update quantity of product that is already in your basket:
 
 ```
-$ curl -i -X POST http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -d token={token}
+$ curl -i -X PUT http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -d token={token}
 ```
 
 * If everything is OK you should get response code `204`;
-* Additional to Exceptions that described in section `Exceptions` here we have validation on parameter `quantity`, if it 
-is missing you will get response with code `400` and message `Parameter 'quantity' is required!`;
-* Also parameter `quantity` should be greater then 0, otherwise you will get response code `400` with following 
+* Parameter `productId` should be integer otherwise you will get response with code `400` and message `Illegal Argument!`;
+* Parameter `productId` should be existing product in the market otherwise you will get response with code `404` and 
+message `Product with provided id '{productId}' is not exist!`;
+* Parameter `quantity` should be integer otherwise you will get response with code `400` and message `Illegal Argument!`;
+* Parameter `quantity` should be equal or greater then 0, otherwise you will get response code `400` with following 
 message `Quantity should be positive value!`;
-* If you trying to update product that is not in user's shopping cart you will get response code `400` with following 
+* If you trying to update product that is not in user's shopping cart you will get response code `404` with following 
 message `Product should be in user's cart!`.
 
 ##### Delete
@@ -128,18 +133,17 @@ $ curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -d t
 ```
 
 * If everything is OK you should get response code `204`;
-* If you trying to remove product that is not in user's shopping cart you will get response code `400` with following 
+* Parameter `productId` should be integer otherwise you will get response with code `400` and message `Illegal Argument!`;
+* Parameter `productId` should be existing product in the market otherwise you will get response with code `404` and 
+message `Product with provided id '{productId}' is not exist!`;
+* If you trying to remove product that is not in user's shopping cart you will get response code `404` with following 
 message `trying to remove product from user's shopping cart that is not there!`.
 
 ### Exceptions
 
-* By providing wrong type of value, for example for `productId` instead of `Int` you provided `String` you will get response 
-with code `400` and message `Illegal Argument!`;
-* For `Private API` if parameter `token` is missing you will get response with code `400` and message `Parameter 'token' is required!`;
+* For `Private API` if parameter `token` is missing you will get response with code `401` and message `Parameter 'token' is required!`;
 * For `Private API` if parameter `token` is wrong, there are no authorized user in the system with provided token, you 
 will get response with code `401` and message `Not Authorized!`;
-* For `Private API` if you provided parameter `productId` of not existing product, you will get response with code `400` 
-and message `Product with provided id '{productId}' is not exist!`;
 * For methods that are not in API, you will get response with code `404` and message `Not Found`;
 * For all uncovered exceptions you will get response with code `500`.
 

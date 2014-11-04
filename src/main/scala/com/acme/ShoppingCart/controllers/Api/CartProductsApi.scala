@@ -1,6 +1,6 @@
 package com.acme.ShoppingCart.controllers.Api
 
-import com.acme.ShoppingCart.exception.{Conflict, BadRequest}
+import com.acme.ShoppingCart.exception.{NotFound, Conflict, BadRequest}
 import com.acme.ShoppingCart.models.UserCartModel
 import com.acme.ShoppingCart.traits.{Users, Products, UserCart}
 import com.twitter.finatra.Controller
@@ -40,9 +40,9 @@ class CartProductsApi extends Controller with Users with Products with UserCart 
   /**
    * Update information regarding user product in the shopping cart
    *
-   * curl -X POST http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -d token={token}
+   * curl -X PUT http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -d token={token}
    */
-  post("/api/cart/products/:productId/quantity/:quantity") { request =>
+  put("/api/cart/products/:productId/quantity/:quantity") { request =>
     val userId = getUserId(request)
     val productId = getProductId(request)
     val quantity = getProductQuantity(request)
@@ -52,7 +52,7 @@ class CartProductsApi extends Controller with Users with Products with UserCart 
         val data = UserCartModel updateProductQuantity (userId, productId, quantity)
         render.status(204).json(Map("data" -> data)).toFuture
 
-      case _ => throw new BadRequest("Product should be in user's cart!")
+      case _ => throw new NotFound("Product should be in user's cart!")
     }
   }
 
@@ -67,7 +67,7 @@ class CartProductsApi extends Controller with Users with Products with UserCart 
 
     UserCartModel remove (userId, productId) match {
       case 1 => render.status(204).toFuture
-      case _ => throw new BadRequest("trying to remove product from user's shopping cart that is not there!")
+      case _ => throw new NotFound("trying to remove product from user's shopping cart that is not there!")
     }
   }
 }

@@ -1,7 +1,7 @@
 package com.acme.ShoppingCart.controllers
 
 import com.twitter.finatra.Controller
-import com.acme.ShoppingCart.exception.{Conflict, BadRequest, Unauthorized}
+import com.acme.ShoppingCart.exception.{NotFound, Conflict, BadRequest, Unauthorized}
 
 class IndexApp extends Controller {
 
@@ -16,29 +16,24 @@ class IndexApp extends Controller {
 
   error { request =>
     request.error match {
-      case Some(e: Unauthorized) =>
-        val message = "Not Authorized!"
-        log.error(request.error.toString, message)
-        render.status(401).plain(message).toFuture
-
-      case Some(e: IllegalArgumentException) =>
-        val message = "Illegal Argument!"
-        log.error(request.error.toString, message)
-        render.status(400).plain(message).toFuture
-
-      case Some(e: BadRequest) =>
-        val message = if (e.getMessage.length > 0) e.getMessage else "Bad Request!"
-        log.error(request.error.toString, message)
-        render.status(400).plain(message).toFuture
-
-      case Some(e: Conflict) =>
-        val message = if (e.getMessage.length > 0) e.getMessage else "Conflict!"
-        log.error(request.error.toString, message)
-        render.status(409).plain(message).toFuture
-
+      case Some(e: IllegalArgumentException) => responseWithMessage(e, 400, "Illegal Argument!")
+      case Some(e: BadRequest) => response(e, 400, "Bad Request!")
+      case Some(e: Unauthorized) => responseWithMessage(e, 401, "Not Authorized!")
+      case Some(e: Conflict) => response(e, 409, "Conflict!")
+      case Some(e: NotFound) => response(e, 404, "Not Found!")
       case _ =>
         log.error(request.error.toString, "Something went wrong!")
         render.status(500).plain("Something went wrong!").toFuture
     }
+  }
+
+  private [this] def responseWithMessage(error: Exception, responseCode: Int, message: String) = {
+    log.error(error.toString, message)
+    render.status(responseCode).plain(message).toFuture
+  }
+
+  private [this] def response(error: Exception, responseCode: Int, defaultMessage: String) = {
+    val message = if (error.getMessage.length > 0) error.getMessage else defaultMessage
+    responseWithMessage(error, responseCode, message)
   }
 }
