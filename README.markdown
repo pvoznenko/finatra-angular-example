@@ -1,4 +1,4 @@
-# Finatra AngularJS Example Application - ShoppingCart
+# Finatra AngularJS REST API Example Application - ShoppingCart
 
 [![Build Status](https://travis-ci.org/fosco-maestro/finatra-angular-example.svg)](https://travis-ci.org/fosco-maestro/finatra-angular-example)
 
