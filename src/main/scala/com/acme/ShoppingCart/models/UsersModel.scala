@@ -2,7 +2,7 @@ package com.acme.ShoppingCart.models
 
 import scala.slick.driver.H2Driver.simple._
 import com.acme.ShoppingCart.models.database.{DB, Users, User}
-import com.acme.ShoppingCart.exception.Unauthorized
+import com.acme.ShoppingCart.exception.UnauthorizedException
 
 object UsersModel {
   val users = TableQuery[Users]

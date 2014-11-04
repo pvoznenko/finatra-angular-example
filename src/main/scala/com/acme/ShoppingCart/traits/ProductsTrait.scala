@@ -1,16 +1,16 @@
 package com.acme.ShoppingCart.traits
 
-import com.acme.ShoppingCart.exception.{NotFound, BadRequest}
+import com.acme.ShoppingCart.exception.{NotFoundException, BadRequestException}
 import com.acme.ShoppingCart.models.ProductsModel
 import com.twitter.finatra.Request
 
-trait Products extends ParamsValidation {
+trait ProductsTrait extends ParamsValidationTrait {
   def getProductId(request: Request) = {
     val productId = getParam(request.routeParams, "productId")
 
     ProductsModel getProductById productId.toInt match {
       case x +: xs => x.id.get
-      case _ => throw new NotFound("Product with provided id '" ++ productId ++ "' is not exist!")
+      case _ => throw new NotFoundException("Product with provided id '" ++ productId ++ "' is not exist!")
     }
   }
 
@@ -18,7 +18,7 @@ trait Products extends ParamsValidation {
     val quantity = getParam(request.routeParams, "quantity").toInt
 
     quantity match {
-      case amount if amount < 0 => throw new BadRequest("Quantity should be positive value!")
+      case amount if amount < 0 => throw new BadRequestException("Quantity should be positive value!")
       case _ => quantity
     }
   }

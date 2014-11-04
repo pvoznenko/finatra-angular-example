@@ -1,48 +1,49 @@
 package com.acme.ShoppingCart.controllers.Api
 
-import com.acme.ShoppingCart.exception.{NotFound, Conflict}
+import com.acme.ShoppingCart.controllers.ResponseController
+import com.acme.ShoppingCart.exception.{NotFoundException, ConflictException}
 import com.acme.ShoppingCart.models.UserCartModel
-import com.acme.ShoppingCart.traits.{Users, Products, UserCart}
-import com.twitter.finatra.Controller
+import com.acme.ShoppingCart.traits.{UsersTrait, ProductsTrait, UserCartTrait}
 
-class CartProductsApi extends Controller with Users with Products with UserCart {
+class CartProductsApi extends ResponseController with UsersTrait with ProductsTrait with UserCartTrait {
 
   /**
    * Get all products for user
    *
-   * curl -X GET -G http://localhost:7070/api/cart/products -H token:{token}
+   * curl -i -X GET -G http://localhost:7070/api/cart/products -H token:{token}
    */
-  get("/api/cart/products") { request =>
+  get("/api/cart/products")(checkRequestType(_) { request =>
     val userId = getUserId(request)
     val products = UserCartModel getUserProducts userId
 
     render.json(products).toFuture
-  }
+  })
 
   /**
    * Add new product to the user's shopping cart
    *
-   * curl -X PUT http://localhost:7070/api/cart/products/{product_id} -H token:{token}
+   * curl -i -X PUT http://localhost:7070/api/cart/products/{product_id} -H token:{token}
    */
-  put("/api/cart/products/:productId") { request =>
+  put("/api/cart/products/:productId")(checkRequestType(_) { request =>
     val userId = getUserId(request)
     val productId = getProductId(request)
 
     isProductInUserCart(productId, userId) match {
       case false =>
         UserCartModel add (userId, productId)
-        render.status(201).json(Map("rel" -> ("/api/cart/products/" ++ productId.toString))).toFuture
+        val response = Map("rel" -> ("/api/cart/products/" ++ productId.toString))
+        render.status(201).json(response).toFuture
 
-      case _ => throw new Conflict("Products is already in user's cart!")
+      case _ => throw new ConflictException("ProductsTrait is already in user's cart!")
     }
-  }
+  })
 
   /**
    * Update information regarding user product in the shopping cart
    *
-   * curl -X PUT http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -H token:{token}
+   * curl -i -X PUT http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -H token:{token}
    */
-  put("/api/cart/products/:productId/quantity/:quantity") { request =>
+  put("/api/cart/products/:productId/quantity/:quantity")(checkRequestType(_) { request =>
     val userId = getUserId(request)
     val productId = getProductId(request)
     val quantity = getProductQuantity(request)
@@ -52,22 +53,22 @@ class CartProductsApi extends Controller with Users with Products with UserCart 
         UserCartModel updateProductQuantity (userId, productId, quantity)
         render.status(204).toFuture
 
-      case _ => throw new NotFound("Product should be in user's cart!")
+      case _ => throw new NotFoundException("Product should be in user's cart!")
     }
-  }
+  })
 
   /**
    * Remove item from user's cart
    *
-   * curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -H token:{token}
+   * curl -i -X DELETE http://localhost:7070/api/cart/products/{product_id} -H token:{token}
    */
-  delete("/api/cart/products/:productId") { request =>
+  delete("/api/cart/products/:productId")(checkRequestType(_) { request =>
     val userId = getUserId(request)
     val productId = getProductId(request)
 
     UserCartModel remove (userId, productId) match {
       case 1 => render.status(204).toFuture
-      case _ => throw new NotFound("trying to remove product from user's shopping cart that is not there!")
+      case _ => throw new NotFoundException("trying to remove product from user's shopping cart that is not there!")
     }
-  }
+  })
 }

@@ -14,7 +14,7 @@ package com.acme.ShoppingCart.helpers
  *
  * Example usage:
  *
- * val tokenGenerator = new BearerTokenGenerator
+ * val tokenGenerator = new BearerTokenGeneratorHelper
  * val username = "mary.smith"
  * val token = tokenGenerator.generateMD5Token(username)
  * println(token)
@@ -22,7 +22,7 @@ package com.acme.ShoppingCart.helpers
  * Author:	Jeff Steinmetz, @jeffsteinmetz
  *
  */
-class BearerTokenGenerator {
+class BearerTokenGeneratorHelper {
   import java.security.SecureRandom
   import java.security.MessageDigest
 
