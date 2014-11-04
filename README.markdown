@@ -47,6 +47,13 @@ You can use [cURL](http://curl.haxx.se/) to test application.
 
 API response in JSON format.
 
+Supported request types:
+
+* `*/*`
+* `application/json`
+
+If you will asked for another type, server will response with code `415` and message `Unsupported Type!`;
+
 ### Public API
 
 #### /api/users
