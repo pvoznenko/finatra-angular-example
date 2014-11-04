@@ -49,8 +49,8 @@ class CartProductsApi extends Controller with Users with Products with UserCart 
 
     isProductInUserCart(productId, userId) match {
       case true =>
-        val data = UserCartModel updateProductQuantity (userId, productId, quantity)
-        render.status(204).json(Map("data" -> data)).toFuture
+        UserCartModel updateProductQuantity (userId, productId, quantity)
+        render.status(204).toFuture
 
       case _ => throw new NotFound("Product should be in user's cart!")
     }

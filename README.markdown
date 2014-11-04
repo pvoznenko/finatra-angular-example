@@ -45,6 +45,8 @@ Application contain public API and private that requires authentication first.
 
 You can use [cURL](http://curl.haxx.se/) to test application.
 
+API response in JSON format.
+
 ### Public API
 
 #### /api/users

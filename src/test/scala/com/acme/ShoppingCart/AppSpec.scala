@@ -64,11 +64,11 @@ class AppSpec extends FlatSpecHelper {
 
   "GET /api/cart/products" should "respond 401 with message `Not Authorized!`" in {
     get("/api/cart/products")
-    response.body   should equal ("Not Authorized!")
+    response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
 
     get("/api/cart/products", Map(), Map("token" -> ""))
-    response.body   should equal ("Not Authorized!")
+    response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
   }
 
@@ -83,23 +83,23 @@ class AppSpec extends FlatSpecHelper {
 
   "PUT /api/cart/products/1" should "respond 401 with message `Not Authorized!`" in {
     put("/api/cart/products/1")
-    response.body   should equal ("Not Authorized!")
+    response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
 
     put("/api/cart/products/1", Map(), Map("token" -> ""))
-    response.body   should equal ("Not Authorized!")
+    response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
   }
 
   "PUT /api/cart/products/abc" should "respond 400 with message `Illegal Argument!`" in {
     put("/api/cart/products/abc", Map(), getAuthToken)
-    response.body   should equal ("Illegal Argument!")
+    response.body.contains ("Illegal Argument!") should equal(true)
     response.code   should equal (400)
   }
 
   "PUT /api/cart/products/12" should "respond 404 with message `Product with provided id '12' is not exist!`" in {
     put("/api/cart/products/12", Map(), getAuthToken)
-    response.body   should equal ("Product with provided id '12' is not exist!")
+    response.body.contains ("Product with provided id '12' is not exist!") should equal(true)
     response.code   should equal (404)
   }
 
@@ -118,7 +118,7 @@ class AppSpec extends FlatSpecHelper {
     addProductWithId1(token)
 
     put("/api/cart/products/1", Map(), token)
-    response.body   should equal ("Products is already in user's cart!")
+    response.body.contains ("Products is already in user's cart!") should equal(true)
     response.code   should equal (409)
   }
 
@@ -128,41 +128,41 @@ class AppSpec extends FlatSpecHelper {
 
   "PUT /api/cart/products/1/quantity/1" should "respond 401 with message `Not Authorized!`" in {
     put("/api/cart/products/1/quantity/1")
-    response.body   should equal ("Not Authorized!")
+    response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
 
     put("/api/cart/products/1/quantity/1", Map(), Map("token" -> ""))
-    response.body   should equal ("Not Authorized!")
+    response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
   }
 
   "PUT /api/cart/products/abc/quantity/1" should "respond 400 with message `Illegal Argument!`" in {
     put("/api/cart/products/abc/quantity/1", Map(), getAuthToken)
-    response.body   should equal ("Illegal Argument!")
+    response.body.contains ("Illegal Argument!") should equal(true)
     response.code   should equal (400)
   }
 
   "PUT /api/cart/products/12/quantity/1" should "respond 404 with message `Product with provided id '12' is not exist!`" in {
     put("/api/cart/products/12/quantity/1", Map(), getAuthToken)
-    response.body   should equal ("Product with provided id '12' is not exist!")
+    response.body.contains ("Product with provided id '12' is not exist!") should equal(true)
     response.code   should equal (404)
   }
 
   "PUT /api/cart/products/1/quantity/abc" should "respond 400 with message `Illegal Argument!`" in {
     put("/api/cart/products/1/quantity/abc", Map(), getAuthToken)
-    response.body   should equal ("Illegal Argument!")
+    response.body.contains ("Illegal Argument!") should equal(true)
     response.code   should equal (400)
   }
 
   "PUT /api/cart/products/1/quantity/-1" should "respond 400 with message `Quantity should be positive value!`" in {
     put("/api/cart/products/1/quantity/-1", Map(), getAuthToken)
-    response.body   should equal ("Quantity should be positive value!")
+    response.body.contains ("Quantity should be positive value!") should equal(true)
     response.code   should equal (400)
   }
 
   "PUT /api/cart/products/1/quantity/1" should "respond 404 with message `Product should be in user's cart!" in {
     put("/api/cart/products/1/quantity/1", Map(), getAuthToken)
-    response.body   should equal ("Product should be in user's cart!")
+    response.body.contains ("Product should be in user's cart!") should equal(true)
     response.code   should equal (404)
   }
 
@@ -180,29 +180,29 @@ class AppSpec extends FlatSpecHelper {
 
   "DELETE /api/cart/products/1" should "respond 401 with message `Not Authorized!`" in {
     delete("/api/cart/products/1")
-    response.body   should equal ("Not Authorized!")
+    response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
 
     delete("/api/cart/products/1", Map(), Map("token" -> ""))
-    response.body   should equal ("Not Authorized!")
+    response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
   }
 
   "DELETE /api/cart/products/abc" should "respond 400 with message `Illegal Argument!`" in {
     delete("/api/cart/products/abc", Map(), getAuthToken)
-    response.body   should equal ("Illegal Argument!")
+    response.body.contains ("Illegal Argument!") should equal(true)
     response.code   should equal (400)
   }
 
   "DELETE /api/cart/products/1" should "respond 404 with message `trying to remove product from user's shopping cart that is not there!`" in {
     delete("/api/cart/products/1", Map(), getAuthToken)
-    response.body   should equal ("trying to remove product from user's shopping cart that is not there!")
+    response.body.contains ("trying to remove product from user's shopping cart that is not there!") should equal(true)
     response.code   should equal (404)
   }
 
   "DELETE /api/cart/products/12" should "respond 404 with message `Product with provided id '12' is not exist!`" in {
     delete("/api/cart/products/12", Map(), getAuthToken)
-    response.body   should equal ("Product with provided id '12' is not exist!")
+    response.body.contains ("Product with provided id '12' is not exist!") should equal(true)
     response.code   should equal (404)
   }
 

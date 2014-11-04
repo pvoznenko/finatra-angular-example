@@ -23,13 +23,13 @@ class IndexApp extends Controller {
       case Some(e: NotFound) => response(e, 404, "Not Found!")
       case _ =>
         log.error(request.error.toString, "Something went wrong!")
-        render.status(500).plain("Something went wrong!").toFuture
+        render.status(500).json(Map("error" -> "Something went wrong!")).toFuture
     }
   }
 
   private [this] def responseWithMessage(error: Exception, responseCode: Int, message: String) = {
     log.error(error.toString, message)
-    render.status(responseCode).plain(message).toFuture
+    render.status(responseCode).json(Map("error" -> message)).toFuture
   }
 
   private [this] def response(error: Exception, responseCode: Int, defaultMessage: String) = {
