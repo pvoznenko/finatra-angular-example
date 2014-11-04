@@ -23,7 +23,7 @@ class IndexApp extends ResponseController {
       case Some(error: UnsupportedOperationException) =>
         val message = "Unsupported Type!"
         log.error(error.toString, message)
-        render.status(415).plain(message).toFuture
+        render.status(400).plain(message).toFuture
       case _ =>
         log.error(request.error.toString, "Something went wrong!")
         render.status(500).json(Map("error" -> "Something went wrong!")).toFuture

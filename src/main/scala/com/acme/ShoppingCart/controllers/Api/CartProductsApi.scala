@@ -28,13 +28,12 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     val userId = getUserId(request)
     val productId = getProductId(request)
 
-    isProductInUserCart(productId, userId) match {
-      case false =>
-        UserCartModel add (userId, productId)
-        val response = Map("rel" -> ("/api/cart/products/" ++ productId.toString))
-        render.status(201).json(response).toFuture
-
-      case _ => throw new ConflictException("ProductsTrait is already in user's cart!")
+    if (isProductInUserCart(productId, userId))
+      throw new ConflictException("Product is already in user's cart!")
+    else {
+      UserCartModel add (userId, productId)
+      val response = Map("rel" -> ("/api/cart/products/" ++ productId.toString))
+      render.status(201).json(response).toFuture
     }
   })
 
@@ -48,13 +47,10 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     val productId = getProductId(request)
     val quantity = getProductQuantity(request)
 
-    isProductInUserCart(productId, userId) match {
-      case true =>
-        UserCartModel updateProductQuantity (userId, productId, quantity)
-        render.status(204).toFuture
-
-      case _ => throw new NotFoundException("Product should be in user's cart!")
-    }
+    if (isProductInUserCart(productId, userId)) {
+      UserCartModel updateProductQuantity (userId, productId, quantity)
+      render.status(204).toFuture
+    } else throw new NotFoundException("Product should be in user's cart!")
   })
 
   /**
@@ -66,9 +62,9 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     val userId = getUserId(request)
     val productId = getProductId(request)
 
-    UserCartModel remove (userId, productId) match {
-      case 1 => render.status(204).toFuture
-      case _ => throw new NotFoundException("trying to remove product from user's shopping cart that is not there!")
-    }
+    val removedRows = UserCartModel remove (userId, productId)
+
+    if (removedRows > 0) render.status(204).toFuture
+    else throw new NotFoundException("trying to remove product from user's shopping cart that is not there!")
   })
 }

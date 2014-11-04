@@ -26,10 +26,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (404)
   }
 
-  "GET /api/products" should "respond 415 with message `Unsupported Type!`" in {
+  "GET /api/products" should "respond 400 with message `Unsupported Type!`" in {
     get("/api/products", Map(), Map("Accept" -> "text/xml"))
     response.body   should equal("Unsupported Type!")
-    response.code   should equal (415)
+    response.code   should equal (400)
   }
 
   "GET /api/products" should "respond 200" in {
@@ -38,10 +38,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (200)
   }
 
-  "POST /api/users/authentication" should "respond 415 with message `Unsupported Type!`" in {
+  "POST /api/users/authentication" should "respond 400 with message `Unsupported Type!`" in {
     post("/api/users/authentication", Map(), Map("Accept" -> "text/xml"))
     response.body   should equal("Unsupported Type!")
-    response.code   should equal (415)
+    response.code   should equal (400)
   }
 
   "POST /api/users/authentication" should "respond 201" in {
@@ -50,10 +50,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (201)
   }
 
-  "GET /api/users" should "respond 415 with message `Unsupported Type!`" in {
+  "GET /api/users" should "respond 400 with message `Unsupported Type!`" in {
     get("/api/users", Map(), Map("Accept" -> "text/xml"))
     response.body   should equal("Unsupported Type!")
-    response.code   should equal (415)
+    response.code   should equal (400)
   }
 
   "GET /api/users" should "respond 200" in {
@@ -93,10 +93,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (401)
   }
 
-  "GET /api/cart/products" should "respond 415 with message `Unsupported Type!`" in {
+  "GET /api/cart/products" should "respond 400 with message `Unsupported Type!`" in {
     get("/api/cart/products", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
     response.body   should equal("Unsupported Type!")
-    response.code   should equal (415)
+    response.code   should equal (400)
   }
 
   "GET /api/cart/products" should "respond 200" in {
@@ -136,10 +136,10 @@ class AppSpec extends FlatSpecHelper {
     JSON.parseFull(response.body).get should equal(TestData.addedProduct)
   }
 
-  "PUT /api/cart/products/1" should "respond 415 with message `Unsupported Type!`" in {
+  "PUT /api/cart/products/1" should "respond 400 with message `Unsupported Type!`" in {
     put("/api/cart/products/1", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
     response.body   should equal("Unsupported Type!")
-    response.code   should equal (415)
+    response.code   should equal (400)
   }
 
   "PUT /api/cart/products/1" should "respond 201" in {
@@ -151,7 +151,7 @@ class AppSpec extends FlatSpecHelper {
     addProductWithId1(token)
 
     put("/api/cart/products/1", Map(), token ++ Map("Accept" -> "application/json"))
-    response.body.contains ("ProductsTrait is already in user's cart!") should equal(true)
+    response.body.contains ("Product is already in user's cart!") should equal(true)
     response.code   should equal (409)
   }
 
@@ -199,10 +199,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (404)
   }
 
-  "PUT /api/cart/products/1/quantity/8" should "respond 415 with message `Unsupported Type!`" in {
+  "PUT /api/cart/products/1/quantity/8" should "respond 400 with message `Unsupported Type!`" in {
     put("/api/cart/products/1/quantity/8", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
     response.body   should equal("Unsupported Type!")
-    response.code   should equal (415)
+    response.code   should equal (400)
   }
 
   "PUT /api/cart/products/1/quantity/8" should "respond 204" in {
@@ -245,10 +245,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (404)
   }
 
-  "DELETE /api/cart/products/1" should "respond 415 with message `Unsupported Type!`" in {
+  "DELETE /api/cart/products/1" should "respond 400 with message `Unsupported Type!`" in {
     delete("/api/cart/products/1", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
     response.body   should equal("Unsupported Type!")
-    response.code   should equal (415)
+    response.code   should equal (400)
   }
 
   "DELETE /api/cart/products/1" should "respond 204 and remove product" in {
