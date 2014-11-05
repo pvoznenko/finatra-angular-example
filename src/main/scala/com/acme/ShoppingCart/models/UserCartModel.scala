@@ -8,7 +8,8 @@ object UserCartModel {
 
   DB.connection.withSession{ implicit session => userCart.ddl.create }
 
-  def add(userId: Int, productId: Int) = DB.connection.withSession{ implicit session => userCart += Cart(userId, productId, 1) }
+  def add(userId: Int, productId: Int) =
+    DB.connection.withSession{ implicit session => (userCart returning userCart.map(_.id)) += Cart(userId, productId, 1) }
 
   def getUserProducts(userId: Int) = DB.connection.withSession { implicit session =>
     val query = for {

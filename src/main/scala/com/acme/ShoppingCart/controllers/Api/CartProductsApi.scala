@@ -3,9 +3,9 @@ package com.acme.ShoppingCart.controllers.Api
 import com.acme.ShoppingCart.controllers.ResponseController
 import com.acme.ShoppingCart.exception.{NotFoundException, ConflictException}
 import com.acme.ShoppingCart.models.UserCartModel
-import com.acme.ShoppingCart.traits.{UsersTrait, ProductsTrait, UserCartTrait}
+import com.acme.ShoppingCart.traits.{ResponseTrait, UsersTrait, ProductsTrait, UserCartTrait}
 
-class CartProductsApi extends ResponseController with UsersTrait with ProductsTrait with UserCartTrait {
+class CartProductsApi extends ResponseController with UsersTrait with ProductsTrait with UserCartTrait with ResponseTrait {
 
   /**
    * Get all products for user
@@ -16,7 +16,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     val userId = getUserId(request)
     val products = UserCartModel getUserProducts userId
 
-    render.json(products).toFuture
+    renderResponse(request, render, None, Some(products))
   })
 
   /**
@@ -31,9 +31,10 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     if (isProductInUserCart(productId, userId))
       throw new ConflictException("Product is already in user's cart!")
     else {
-      UserCartModel add (userId, productId)
-      val response = Map("rel" -> ("/api/cart/products/" ++ productId.toString))
-      render.status(201).json(response).toFuture
+      val rowId = UserCartModel add (userId, productId)
+      val response = mapCreateResponse(rowId, userId, productId)
+
+      renderResponse(request, render, Some(201), Some(response))
     }
   })
 
@@ -49,7 +50,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
 
     if (isProductInUserCart(productId, userId)) {
       UserCartModel updateProductQuantity (userId, productId, quantity)
-      render.status(204).toFuture
+      renderResponse(request, render, Some(204))
     } else throw new NotFoundException("Product should be in user's cart!")
   })
 
@@ -64,7 +65,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
 
     val removedRows = UserCartModel remove (userId, productId)
 
-    if (removedRows > 0) render.status(204).toFuture
+    if (removedRows > 0) renderResponse(request, render, Some(204))
     else throw new NotFoundException("trying to remove product from user's shopping cart that is not there!")
   })
 }

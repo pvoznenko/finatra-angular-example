@@ -17,7 +17,7 @@ class UsersApi extends ResponseController {
 
     UsersModel add token
 
-    render.status(201).json(response).toFuture
+    renderResponse(request, render, Some(201), Some(response))
   })
 
   /**
@@ -29,6 +29,6 @@ class UsersApi extends ResponseController {
     val limit = request.params.getInt("limit")
     val users = UsersModel.getAll(limit)
 
-    render.json(users).toFuture
+    renderResponse(request, render, Some(200), Some(users))
   })
 }

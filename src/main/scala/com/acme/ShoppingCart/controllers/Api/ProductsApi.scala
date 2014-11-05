@@ -14,6 +14,6 @@ class ProductsApi extends ResponseController {
     val limit = request.params.getInt("limit")
     val products = ProductsModel.getAll(limit)
 
-    render.json(products).toFuture
+    renderResponse(request, render, Some(200), Some(products))
   })
 }

@@ -2,7 +2,7 @@ package com.acme.ShoppingCart
 
 import com.acme.ShoppingCart.controllers.Api.{CartProductsApi, ProductsApi, UsersApi}
 import com.twitter.finatra.test._
-import com.twitter.finatra.{Logging, FinatraServer}
+import com.twitter.finatra.FinatraServer
 import com.acme.ShoppingCart.controllers.IndexApp
 import scala.collection.Map
 import scala.util.parsing.json.JSON
@@ -26,10 +26,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (404)
   }
 
-  "GET /api/products" should "respond 400 with message `Unsupported Type!`" in {
+  "GET /api/products" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
     get("/api/products", Map(), Map("Accept" -> "text/xml"))
-    response.body   should equal("Unsupported Type!")
-    response.code   should equal (400)
+    response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
+    response.code   should equal (406)
   }
 
   "GET /api/products" should "respond 200" in {
@@ -38,10 +38,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (200)
   }
 
-  "POST /api/users/authentication" should "respond 400 with message `Unsupported Type!`" in {
+  "POST /api/users/authentication" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
     post("/api/users/authentication", Map(), Map("Accept" -> "text/xml"))
-    response.body   should equal("Unsupported Type!")
-    response.code   should equal (400)
+    response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
+    response.code   should equal (406)
   }
 
   "POST /api/users/authentication" should "respond 201" in {
@@ -50,10 +50,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (201)
   }
 
-  "GET /api/users" should "respond 400 with message `Unsupported Type!`" in {
+  "GET /api/users" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
     get("/api/users", Map(), Map("Accept" -> "text/xml"))
-    response.body   should equal("Unsupported Type!")
-    response.code   should equal (400)
+    response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
+    response.code   should equal (406)
   }
 
   "GET /api/users" should "respond 200" in {
@@ -93,14 +93,15 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (401)
   }
 
-  "GET /api/cart/products" should "respond 400 with message `Unsupported Type!`" in {
+  "GET /api/cart/products" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
     get("/api/cart/products", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
-    response.body   should equal("Unsupported Type!")
-    response.code   should equal (400)
+    response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
+    response.code   should equal (406)
   }
 
   "GET /api/cart/products" should "respond 200" in {
     get("/api/cart/products", Map(), getAuthToken)
+    print(response.body)
     response.code   should equal (200)
   }
 
@@ -133,20 +134,19 @@ class AppSpec extends FlatSpecHelper {
   def addProductWithId1 (token: Map[String, String]) = {
     put("/api/cart/products/1", Map(), token ++ Map("Accept" -> "application/json"))
     response.code   should equal (201)
-    JSON.parseFull(response.body).get should equal(TestData.addedProduct)
   }
 
-  "PUT /api/cart/products/1" should "respond 400 with message `Unsupported Type!`" in {
+  "PUT /api/cart/products/1" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
     put("/api/cart/products/1", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
-    response.body   should equal("Unsupported Type!")
-    response.code   should equal (400)
+    response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
+    response.code   should equal (406)
   }
 
   "PUT /api/cart/products/1" should "respond 201" in {
     addProductWithId1(getAuthToken)
   }
 
-  "PUT /api/cart/products/1 multiple times" should "respond 409 with message `ProductsTrait is already in user's cart!`" in {
+  "PUT /api/cart/products/1 multiple times" should "respond 409 with message `Product is already in user's cart!`" in {
     val token = getAuthToken
     addProductWithId1(token)
 
@@ -199,10 +199,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (404)
   }
 
-  "PUT /api/cart/products/1/quantity/8" should "respond 400 with message `Unsupported Type!`" in {
+  "PUT /api/cart/products/1/quantity/8" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
     put("/api/cart/products/1/quantity/8", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
-    response.body   should equal("Unsupported Type!")
-    response.code   should equal (400)
+    response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
+    response.code   should equal (406)
   }
 
   "PUT /api/cart/products/1/quantity/8" should "respond 204" in {
@@ -245,10 +245,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (404)
   }
 
-  "DELETE /api/cart/products/1" should "respond 400 with message `Unsupported Type!`" in {
+  "DELETE /api/cart/products/1" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
     delete("/api/cart/products/1", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
-    response.body   should equal("Unsupported Type!")
-    response.code   should equal (400)
+    response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
+    response.code   should equal (406)
   }
 
   "DELETE /api/cart/products/1" should "respond 204 and remove product" in {

@@ -15,18 +15,13 @@ class IndexApp extends ResponseController {
 
   error { request =>
     request.error match {
-      case Some(error: IllegalArgumentException) => renderResponseErrorWithCustomMessage(error, 400, "Illegal Argument!")
+      case Some(error: IllegalArgumentException) => renderResponseErrorWithCustomMessage(error.toString, 400, "Illegal Argument!")
       case Some(error: BadRequestException) => renderResponseError(error, 400, "Bad Request!")
-      case Some(error: UnauthorizedException) => renderResponseErrorWithCustomMessage(error, 401, "Not Authorized!")
-      case Some(error: ConflictException) => renderResponseError(error, 409, "ConflictException!")
+      case Some(error: UnauthorizedException) => renderResponseErrorWithCustomMessage(error.toString, 401, "Not Authorized!")
       case Some(error: NotFoundException) => renderResponseError(error, 404, "Not Found!")
-      case Some(error: UnsupportedOperationException) =>
-        val message = "Unsupported Type!"
-        log.error(error.toString, message)
-        render.status(400).plain(message).toFuture
-      case _ =>
-        log.error(request.error.toString, "Something went wrong!")
-        render.status(500).json(Map("error" -> "Something went wrong!")).toFuture
+      case Some(error: UnsupportedOperationException) => renderResponseErrorWithCustomMessage(error.toString, 406, "No matching accepted Response format could be determined!")
+      case Some(error: ConflictException) => renderResponseError(error, 409, "ConflictException!")
+      case _ => renderResponseErrorWithCustomMessage(request.error.toString, 500, "Something went wrong!")
     }
   }
 }
