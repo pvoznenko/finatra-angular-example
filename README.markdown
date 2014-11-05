@@ -29,7 +29,7 @@ Ti run application use following command:
 $ sbt run
 ```
 
-It will start on port 7070, so you should see result on: [http://localhost:7070](http://localhost:7070)
+It will start on port `7070`, so you should see result on: [http://localhost:7070](http://localhost:7070)
 
 #### Testing
 
