@@ -1,8 +1,16 @@
-package com.acme.ShoppingCart.models.database
+package com.acme.ShoppingCart.database
 
+import com.acme.ShoppingCart.DB
+import com.acme.ShoppingCart.dto.User
 import scala.slick.driver.H2Driver.simple._
 
-case class User(token: String, id: Option[Int] = None)
+object UsersDatabase {
+  val users = TableQuery[Users]
+
+  implicit val session = DB.connection.createSession()
+
+  users.ddl.create
+}
 
 class Users(tag: Tag) extends Table[User](tag, "USERS") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)

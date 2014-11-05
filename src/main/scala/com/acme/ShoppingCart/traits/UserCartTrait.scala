@@ -1,10 +1,10 @@
 package com.acme.ShoppingCart.traits
 
-import com.acme.ShoppingCart.models.UserCartModel
+import com.acme.ShoppingCart.dao.UserCartDAO
 
 trait UserCartTrait {
   def isProductInUserCart(productId: Int, userId: Int) =
-    UserCartModel getUserProduct (userId, productId) match {
+    UserCartDAO getUserProduct (userId, productId) match {
       case x +: xs => true
       case _ => false
     }

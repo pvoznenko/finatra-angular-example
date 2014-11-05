@@ -1,4 +1,4 @@
-package com.acme.ShoppingCart.models.database
+package com.acme.ShoppingCart
 
 import scala.slick.driver.H2Driver.simple._
 

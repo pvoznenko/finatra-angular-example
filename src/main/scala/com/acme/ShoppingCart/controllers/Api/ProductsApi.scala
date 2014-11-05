@@ -1,7 +1,7 @@
 package com.acme.ShoppingCart.controllers.Api
 
 import com.acme.ShoppingCart.controllers.ResponseController
-import com.acme.ShoppingCart.models.ProductsModel
+import com.acme.ShoppingCart.dao.ProductsDAO
 
 class ProductsApi extends ResponseController {
 
@@ -12,7 +12,7 @@ class ProductsApi extends ResponseController {
    */
   get("/api/products")(checkRequestType(_) { request =>
     val limit = request.params.getInt("limit")
-    val products = ProductsModel.getAll(limit)
+    val products = ProductsDAO.getAll(limit)
 
     renderResponse(request, render, Some(200), Some(products))
   })
