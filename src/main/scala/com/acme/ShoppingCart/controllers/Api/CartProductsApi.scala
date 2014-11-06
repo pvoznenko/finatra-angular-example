@@ -1,7 +1,7 @@
 package com.acme.ShoppingCart.controllers.Api
 
 import com.acme.ShoppingCart.controllers.ResponseController
-import com.acme.ShoppingCart.exception.{NotFoundException, ConflictException}
+import com.acme.ShoppingCart.exceptions.{NotFoundException, ConflictException}
 import com.acme.ShoppingCart.dao.UserCartDAO
 import com.acme.ShoppingCart.traits.{ResponseTrait, UsersTrait, ProductsTrait, UserCartTrait}
 

@@ -38,8 +38,8 @@ abstract class ResponseController extends Controller with Logging {
     }
 
   def checkRequestType(request: Request)(callback: (Request) => Future[ResponseBuilder]) =
-    request.headers().get("Accept") match {
-      case "*/*" | "application/json" => callback(request)
+    request.headers().get("Accept").split(",").map(_.trim) match {
+      case array if array.contains("*/*") || array.contains("application/json") => callback(request)
       case _ => throw new UnsupportedOperationException
     }
 }

@@ -1,6 +1,6 @@
 package com.acme.ShoppingCart.traits
 
-import com.acme.ShoppingCart.exception.BadRequestException
+import com.acme.ShoppingCart.exceptions.BadRequestException
 import scala.collection.Map
 
 trait ParamsValidationTrait {

@@ -1,7 +1,9 @@
 package com.acme.ShoppingCart
 
 import scala.slick.driver.H2Driver.simple._
+import com.typesafe.config._
 
 object DB {
-  val connection = Database.forURL("jdbc:h2:mem:shoppingCart;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
+  val config = ConfigFactory.load()
+  val connection = Database.forURL(config.getString("db.url"), driver = config.getString("db.driver"))
 }

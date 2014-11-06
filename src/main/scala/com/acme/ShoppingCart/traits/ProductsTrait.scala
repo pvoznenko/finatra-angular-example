@@ -1,6 +1,6 @@
 package com.acme.ShoppingCart.traits
 
-import com.acme.ShoppingCart.exception.{NotFoundException, BadRequestException}
+import com.acme.ShoppingCart.exceptions.{NotFoundException, BadRequestException}
 import com.acme.ShoppingCart.dao.ProductsDAO
 import com.twitter.finatra.Request
 

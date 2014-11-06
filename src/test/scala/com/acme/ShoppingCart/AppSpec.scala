@@ -33,7 +33,7 @@ class AppSpec extends FlatSpecHelper {
   }
 
   "GET /api/products" should "respond 200" in {
-    get("/api/products", Map(), Map("Accept" -> "application/json"))
+    get("/api/products", Map(), Map("Accept" -> "application/json, */*"))
     JSON.parseFull(response.body).get should equal(TestData.products)
     response.code   should equal (200)
   }
