@@ -54,14 +54,22 @@ Supported request types:
 If you will asked for another type, server will response with code `406` and message `No matching accepted Response 
 format could be determined!`.
 
+### Version
+
+You can configure version of your API at `resources/application.conf`.
+
+Make sure that your requests contain correct version of API.
+
+Default version is set to `3`.
+
 ### Public API
 
-#### /api/users
+#### /api/v3/users
 
 You can get authentication token for your communication with server's private API by querying following URL:
 
 ```
-$ curl -i -H Accept:application/json -X POST http://localhost:7070/api/users/authentication
+$ curl -i -H Accept:application/json -X POST http://localhost:7070/api/v3/users/authentication
 ```
 
 You will get response status `201` - because this method will fake user creation and provide you with auth token for private API.
@@ -70,33 +78,33 @@ You can also can check list of authenticated users by following URL (this part m
 optional parameter, default 10. If limit < 0 then you will get all data):
 
 ```
-$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/users -d limit={limit.?}
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v3/users -d limit={limit.?}
 ```
 
 You should get response code `200`.
 
-#### /api/products
+#### /api/v3/products
 
 On following URL you can get list of available products (limit is optional parameter, default 10. 
 If limit < 0 then you will get all data):
  
 ```
-curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/products -d limit={limit.?}
+curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v3/products -d limit={limit.?}
 ```
 
 You should get response code `200`.
 
 ### Private API
 
-For this part of API you need to have authentication toking provided by `/api/users/authentication`.
+For this part of API you need to have authentication toking provided by `/api/v3/users/authentication`.
 You should pass token in header with key `token`.
 
-#### /api/cart/products
+#### /api/v3/cart/products
 
 You can get list of all products currently in your basket:
 
 ```
-$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/cart/products -H token:{token}
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v3/cart/products -H token:{token}
 ```
 
 * If everything is OK you should get response code `200`.
@@ -106,7 +114,7 @@ $ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/cart/pr
 Add new product to your basket:
 
 ```
-$ curl -i -H Accept:application/json -X PUT http://localhost:7070/api/cart/products/{productId} -H token:{token}
+$ curl -i -H Accept:application/json -X PUT http://localhost:7070/api/v3/cart/products/{productId} -H token:{token}
 ```
 
 * If everything is OK you should get response code `201`;
@@ -121,7 +129,7 @@ message `Product with provided id '{productId}' is not exist!`.
 You can update quantity of product that is already in your basket:
 
 ```
-$ curl -i -H Accept:application/json -X PUT http://localhost:7070/api/cart/products/{productId}/quantity/{quantity} -H token:{token}
+$ curl -i -H Accept:application/json -X PUT http://localhost:7070/api/v3/cart/products/{productId}/quantity/{quantity} -H token:{token}
 ```
 
 * If everything is OK you should get response code `204`;
@@ -137,7 +145,7 @@ message `Product should be in user's cart!`.
 You can remove product from your cart using following URL:
 
 ```
-$ curl -i -H Accept:application/json -X DELETE -G http://localhost:7070/api/cart/products/{productId} -H token:{token}
+$ curl -i -H Accept:application/json -X DELETE -G http://localhost:7070/api/v3/cart/products/{productId} -H token:{token}
 ```
 
 * If everything is OK you should get response code `204`;

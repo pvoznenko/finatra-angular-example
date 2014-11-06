@@ -3,15 +3,16 @@ package com.acme.ShoppingCart.controllers.Api
 import com.acme.ShoppingCart.controllers.ResponseController
 import com.acme.ShoppingCart.helpers.BearerTokenGeneratorHelper
 import com.acme.ShoppingCart.dao.UsersDAO
+import com.acme.ShoppingCart.API
 
 class UsersApi extends ResponseController {
 
   /**
    * Get authentication token
    *
-   * curl -i -H Accept:application/json -X POST http://localhost:7070/api/users/authentication
+   * curl -i -H Accept:application/json -X POST http://localhost:7070/api/v3/users/authentication
    */
-  post("/api/users/authentication")(checkRequestType(_) { request =>
+  post(API.getBaseUrl ++ "/users/authentication")(checkRequestType(_) { request =>
     val token = new BearerTokenGeneratorHelper generateSHAToken "ShoppingCart"
     val response = Map("token" -> token)
 
@@ -23,9 +24,9 @@ class UsersApi extends ResponseController {
   /**
    * Method only for debugging - will return list of users
    *
-   * curl -i -X GET -G http://localhost:7070/api/users -d limit={limit.?}
+   * curl -i -X GET -G http://localhost:7070/api/v3/users -d limit={limit.?}
    */
-  get("/api/users")(checkRequestType(_) { request =>
+  get(API.getBaseUrl ++ "/users")(checkRequestType(_) { request =>
     val limit = request.params.getInt("limit")
     val users = UsersDAO.getAll(limit)
 

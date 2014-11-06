@@ -1,5 +1,5 @@
 angular.module('shoppingCart.site').factory("UserAuth", ['$resource', function($resource) {
-    return $resource('api/users/authentication', null, {
+    return $resource('api/v3/users/authentication', null, {
         getAuthToken: {
             method: 'POST'
         }

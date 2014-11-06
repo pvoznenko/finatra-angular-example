@@ -27,37 +27,37 @@ class AppSpec extends FlatSpecHelper {
   }
 
   "GET /api/products" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
-    get("/api/products", Map(), Map("Accept" -> "text/xml"))
+    get(API.getBaseUrl ++ "/products", Map(), Map("Accept" -> "text/xml"))
     response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
     response.code   should equal (406)
   }
 
   "GET /api/products" should "respond 200" in {
-    get("/api/products", Map(), Map("Accept" -> "application/json, */*"))
+    get(API.getBaseUrl ++ "/products", Map(), Map("Accept" -> "application/json, */*"))
     JSON.parseFull(response.body).get should equal(TestData.products)
     response.code   should equal (200)
   }
 
   "POST /api/users/authentication" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
-    post("/api/users/authentication", Map(), Map("Accept" -> "text/xml"))
+    post(API.getBaseUrl ++ "/users/authentication", Map(), Map("Accept" -> "text/xml"))
     response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
     response.code   should equal (406)
   }
 
   "POST /api/users/authentication" should "respond 201" in {
-    post("/api/users/authentication", Map(), Map("Accept" -> "application/json"))
+    post(API.getBaseUrl ++ "/users/authentication", Map(), Map("Accept" -> "application/json"))
     response.body.contains ("token") should equal(true)
     response.code   should equal (201)
   }
 
   "GET /api/users" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
-    get("/api/users", Map(), Map("Accept" -> "text/xml"))
+    get(API.getBaseUrl ++ "/users", Map(), Map("Accept" -> "text/xml"))
     response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
     response.code   should equal (406)
   }
 
   "GET /api/users" should "respond 200" in {
-    get("/api/users", Map(), Map("Accept" -> "application/json"))
+    get(API.getBaseUrl ++ "/users", Map(), Map("Accept" -> "application/json"))
     response.code   should equal (200)
   }
 
@@ -68,7 +68,7 @@ class AppSpec extends FlatSpecHelper {
   }
 
   def getAuthToken = {
-    post("/api/users/authentication", Map(), Map("Accept" -> "application/json"))
+    post(API.getBaseUrl ++ "/users/authentication", Map(), Map("Accept" -> "application/json"))
     response.code   should equal (201)
 
     type M = Map[String, String]
@@ -84,23 +84,23 @@ class AppSpec extends FlatSpecHelper {
    */
 
   "GET /api/cart/products" should "respond 401 with message `Not Authorized!`" in {
-    get("/api/cart/products", Map(), Map("Accept" -> "application/json"))
+    get(API.getBaseUrl ++ "/cart/products", Map(), Map("Accept" -> "application/json"))
     response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
 
-    get("/api/cart/products", Map(), Map("token" -> "") ++ Map("Accept" -> "application/json"))
+    get(API.getBaseUrl ++ "/cart/products", Map(), Map("token" -> "") ++ Map("Accept" -> "application/json"))
     response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
   }
 
   "GET /api/cart/products" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
-    get("/api/cart/products", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
+    get(API.getBaseUrl ++ "/cart/products", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
     response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
     response.code   should equal (406)
   }
 
   "GET /api/cart/products" should "respond 200" in {
-    get("/api/cart/products", Map(), getAuthToken)
+    get(API.getBaseUrl ++ "/cart/products", Map(), getAuthToken)
     print(response.body)
     response.code   should equal (200)
   }
@@ -110,34 +110,34 @@ class AppSpec extends FlatSpecHelper {
    */
 
   "PUT /api/cart/products/1" should "respond 401 with message `Not Authorized!`" in {
-    put("/api/cart/products/1", Map(), Map("Accept" -> "application/json"))
+    put(API.getBaseUrl ++ "/cart/products/1", Map(), Map("Accept" -> "application/json"))
     response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
 
-    put("/api/cart/products/1", Map(), Map("token" -> "") ++ Map("Accept" -> "application/json"))
+    put(API.getBaseUrl ++ "/cart/products/1", Map(), Map("token" -> "") ++ Map("Accept" -> "application/json"))
     response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
   }
 
   "PUT /api/cart/products/abc" should "respond 422 with message `Illegal Argument!`" in {
-    put("/api/cart/products/abc", Map(), getAuthToken)
+    put(API.getBaseUrl ++ "/cart/products/abc", Map(), getAuthToken)
     response.body.contains ("Illegal Argument!") should equal(true)
     response.code   should equal (422)
   }
 
   "PUT /api/cart/products/12" should "respond 404 with message `Product with provided id '12' is not exist!`" in {
-    put("/api/cart/products/12", Map(), getAuthToken)
+    put(API.getBaseUrl ++ "/cart/products/12", Map(), getAuthToken)
     response.body.contains ("Product with provided id '12' is not exist!") should equal(true)
     response.code   should equal (404)
   }
 
   def addProductWithId1 (token: Map[String, String]) = {
-    put("/api/cart/products/1", Map(), token ++ Map("Accept" -> "application/json"))
+    put(API.getBaseUrl ++ "/cart/products/1", Map(), token ++ Map("Accept" -> "application/json"))
     response.code   should equal (201)
   }
 
   "PUT /api/cart/products/1" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
-    put("/api/cart/products/1", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
+    put(API.getBaseUrl ++ "/cart/products/1", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
     response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
     response.code   should equal (406)
   }
@@ -150,7 +150,7 @@ class AppSpec extends FlatSpecHelper {
     val token = getAuthToken
     addProductWithId1(token)
 
-    put("/api/cart/products/1", Map(), token ++ Map("Accept" -> "application/json"))
+    put(API.getBaseUrl ++ "/cart/products/1", Map(), token ++ Map("Accept" -> "application/json"))
     response.body.contains ("Product is already in user's cart!") should equal(true)
     response.code   should equal (409)
   }
@@ -160,47 +160,47 @@ class AppSpec extends FlatSpecHelper {
    */
 
   "PUT /api/cart/products/1/quantity/1" should "respond 401 with message `Not Authorized!`" in {
-    put("/api/cart/products/1/quantity/1", Map(), Map("Accept" -> "application/json"))
+    put(API.getBaseUrl ++ "/cart/products/1/quantity/1", Map(), Map("Accept" -> "application/json"))
     response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
 
-    put("/api/cart/products/1/quantity/1", Map(), Map("token" -> "") ++ Map("Accept" -> "application/json"))
+    put(API.getBaseUrl ++ "/cart/products/1/quantity/1", Map(), Map("token" -> "") ++ Map("Accept" -> "application/json"))
     response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
   }
 
   "PUT /api/cart/products/abc/quantity/1" should "respond 422 with message `Illegal Argument!`" in {
-    put("/api/cart/products/abc/quantity/1", Map(), getAuthToken)
+    put(API.getBaseUrl ++ "/cart/products/abc/quantity/1", Map(), getAuthToken)
     response.body.contains ("Illegal Argument!") should equal(true)
     response.code   should equal (422)
   }
 
   "PUT /api/cart/products/12/quantity/1" should "respond 404 with message `Product with provided id '12' is not exist!`" in {
-    put("/api/cart/products/12/quantity/1", Map(), getAuthToken)
+    put(API.getBaseUrl ++ "/cart/products/12/quantity/1", Map(), getAuthToken)
     response.body.contains ("Product with provided id '12' is not exist!") should equal(true)
     response.code   should equal (404)
   }
 
   "PUT /api/cart/products/1/quantity/abc" should "respond 422 with message `Illegal Argument!`" in {
-    put("/api/cart/products/1/quantity/abc", Map(), getAuthToken)
+    put(API.getBaseUrl ++ "/cart/products/1/quantity/abc", Map(), getAuthToken)
     response.body.contains ("Illegal Argument!") should equal(true)
     response.code   should equal (422)
   }
 
   "PUT /api/cart/products/1/quantity/-1" should "respond 422 with message `Illegal Argument!`" in {
-    put("/api/cart/products/1/quantity/-1", Map(), getAuthToken)
+    put(API.getBaseUrl ++ "/cart/products/1/quantity/-1", Map(), getAuthToken)
     response.body.contains ("Illegal Argument!") should equal(true)
     response.code   should equal (422)
   }
 
   "PUT /api/cart/products/1/quantity/1" should "respond 404 with message `Product should be in user's cart!" in {
-    put("/api/cart/products/1/quantity/1", Map(), getAuthToken)
+    put(API.getBaseUrl ++ "/cart/products/1/quantity/1", Map(), getAuthToken)
     response.body.contains ("Product should be in user's cart!") should equal(true)
     response.code   should equal (404)
   }
 
   "PUT /api/cart/products/1/quantity/8" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
-    put("/api/cart/products/1/quantity/8", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
+    put(API.getBaseUrl ++ "/cart/products/1/quantity/8", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
     response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
     response.code   should equal (406)
   }
@@ -209,7 +209,7 @@ class AppSpec extends FlatSpecHelper {
     val token = getAuthToken
     addProductWithId1(token)
 
-    put("/api/cart/products/1/quantity/8", Map(), token ++ Map("Accept" -> "application/json"))
+    put(API.getBaseUrl ++ "/cart/products/1/quantity/8", Map(), token ++ Map("Accept" -> "application/json"))
     response.code   should equal (204)
   }
 
@@ -218,35 +218,35 @@ class AppSpec extends FlatSpecHelper {
    */
 
   "DELETE /api/cart/products/1" should "respond 401 with message `Not Authorized!`" in {
-    delete("/api/cart/products/1", Map(), Map("Accept" -> "application/json"))
+    delete(API.getBaseUrl ++ "/cart/products/1", Map(), Map("Accept" -> "application/json"))
     response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
 
-    delete("/api/cart/products/1", Map(), Map("token" -> "") ++ Map("Accept" -> "application/json"))
+    delete(API.getBaseUrl ++ "/cart/products/1", Map(), Map("token" -> "") ++ Map("Accept" -> "application/json"))
     response.body.contains ("Not Authorized!") should equal(true)
     response.code   should equal (401)
   }
 
   "DELETE /api/cart/products/abc" should "respond 422 with message `Illegal Argument!`" in {
-    delete("/api/cart/products/abc", Map(), getAuthToken)
+    delete(API.getBaseUrl ++ "/cart/products/abc", Map(), getAuthToken)
     response.body.contains ("Illegal Argument!") should equal(true)
     response.code   should equal (422)
   }
 
   "DELETE /api/cart/products/1" should "respond 404 with message `trying to remove product from user's shopping cart that is not there!`" in {
-    delete("/api/cart/products/1", Map(), getAuthToken)
+    delete(API.getBaseUrl ++ "/cart/products/1", Map(), getAuthToken)
     response.body.contains ("trying to remove product from user's shopping cart that is not there!") should equal(true)
     response.code   should equal (404)
   }
 
   "DELETE /api/cart/products/12" should "respond 404 with message `Product with provided id '12' is not exist!`" in {
-    delete("/api/cart/products/12", Map(), getAuthToken)
+    delete(API.getBaseUrl ++ "/cart/products/12", Map(), getAuthToken)
     response.body.contains ("Product with provided id '12' is not exist!") should equal(true)
     response.code   should equal (404)
   }
 
   "DELETE /api/cart/products/1" should "respond 400 with message `No matching accepted Response format could be determined!`" in {
-    delete("/api/cart/products/1", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
+    delete(API.getBaseUrl ++ "/cart/products/1", Map(), getAuthToken ++ Map("Accept" -> "text/xml"))
     response.body.contains  ("No matching accepted Response format could be determined!") should equal(true)
     response.code   should equal (406)
   }
@@ -254,16 +254,16 @@ class AppSpec extends FlatSpecHelper {
   "DELETE /api/cart/products/1" should "respond 204 and remove product" in {
     val token = getAuthToken
 
-    put("/api/cart/products/1", Map(), token ++ Map("Accept" -> "application/json"))
+    put(API.getBaseUrl ++ "/cart/products/1", Map(), token ++ Map("Accept" -> "application/json"))
     response.code   should equal (201)
 
-    get("/api/cart/products", Map(), token ++ Map("Accept" -> "application/json"))
+    get(API.getBaseUrl ++ "/cart/products", Map(), token ++ Map("Accept" -> "application/json"))
     JSON.parseFull(response.body).get should equal(TestData.firstProduct)
 
-    delete("/api/cart/products/1", Map(), token ++ Map("Accept" -> "application/json"))
+    delete(API.getBaseUrl ++ "/cart/products/1", Map(), token ++ Map("Accept" -> "application/json"))
     response.code   should equal (204)
 
-    get("/api/cart/products", Map(), token ++ Map("Accept" -> "application/json"))
+    get(API.getBaseUrl ++ "/cart/products", Map(), token ++ Map("Accept" -> "application/json"))
     JSON.parseFull(response.body).get should equal(List())
   }
 }

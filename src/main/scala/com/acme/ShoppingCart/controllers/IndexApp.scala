@@ -2,6 +2,8 @@ package com.acme.ShoppingCart.controllers
 
 import com.acme.ShoppingCart.exceptions._
 
+
+
 class IndexApp extends ResponseController {
 
   /**

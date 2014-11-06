@@ -1,5 +1,5 @@
 angular.module('shoppingCart.site').factory("Cart", ['$resource', function(resource) {
-    return resource('api/cart/products/:productId', {
+    return resource('api/v3/cart/products/:productId', {
         productId: '@productId'
     }, {
         add: {
@@ -10,7 +10,7 @@ angular.module('shoppingCart.site').factory("Cart", ['$resource', function(resou
             params: {
                 quantity: '@quantity'
             },
-            url: 'api/cart/products/:productId/quantity/:quantity'
+            url: 'api/v3/cart/products/:productId/quantity/:quantity'
         }
     });
 }]);

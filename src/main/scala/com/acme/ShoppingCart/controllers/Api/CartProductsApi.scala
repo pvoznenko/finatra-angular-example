@@ -4,15 +4,16 @@ import com.acme.ShoppingCart.controllers.ResponseController
 import com.acme.ShoppingCart.exceptions.{NotFoundException, ConflictException}
 import com.acme.ShoppingCart.dao.UserCartDAO
 import com.acme.ShoppingCart.traits.{ResponseTrait, UsersTrait, ProductsTrait, UserCartTrait}
+import com.acme.ShoppingCart.API
 
 class CartProductsApi extends ResponseController with UsersTrait with ProductsTrait with UserCartTrait with ResponseTrait {
 
   /**
    * Get all products for user
    *
-   * curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/cart/products -H token:{token}
+   * curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v3/cart/products -H token:{token}
    */
-  get("/api/cart/products")(checkRequestType(_) { request =>
+  get(API.getBaseUrl ++ "/cart/products")(checkRequestType(_) { request =>
     val userId = getUserId(request)
     val products = UserCartDAO getUserProducts userId
 
@@ -22,9 +23,9 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
   /**
    * Add new product to the user's shopping cart
    *
-   * curl -i -H Accept:application/json -X PUT http://localhost:7070/api/cart/products/{productId} -H token:{token}
+   * curl -i -H Accept:application/json -X PUT http://localhost:7070/api/v3/cart/products/{productId} -H token:{token}
    */
-  put("/api/cart/products/:productId")(checkRequestType(_) { request =>
+  put(API.getBaseUrl ++ "/cart/products/:productId")(checkRequestType(_) { request =>
     val userId = getUserId(request)
     val productId = getProductId(request)
 
@@ -41,9 +42,9 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
   /**
    * Update information regarding user product in the shopping cart
    *
-   * curl -i -H Accept:application/json -X PUT http://localhost:7070/api/cart/products/{productId}/quantity/{quantity} -H token:{token}
+   * curl -i -H Accept:application/json -X PUT http://localhost:7070/api/v3/cart/products/{productId}/quantity/{quantity} -H token:{token}
    */
-  put("/api/cart/products/:productId/quantity/:quantity")(checkRequestType(_) { request =>
+  put(API.getBaseUrl ++ "/cart/products/:productId/quantity/:quantity")(checkRequestType(_) { request =>
     val userId = getUserId(request)
     val productId = getProductId(request)
     val quantity = getProductQuantity(request)
@@ -57,9 +58,9 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
   /**
    * Remove item from user's cart
    *
-   * curl -i -H Accept:application/json -X DELETE http://localhost:7070/api/cart/products/{productId} -H token:{token}
+   * curl -i -H Accept:application/json -X DELETE http://localhost:7070/api/v3/cart/products/{productId} -H token:{token}
    */
-  delete("/api/cart/products/:productId")(checkRequestType(_) { request =>
+  delete(API.getBaseUrl ++ "/cart/products/:productId")(checkRequestType(_) { request =>
     val userId = getUserId(request)
     val productId = getProductId(request)
 
