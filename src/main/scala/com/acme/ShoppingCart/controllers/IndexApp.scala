@@ -15,12 +15,12 @@ class IndexApp extends ResponseController {
 
   error { request =>
     request.error match {
-      case Some(error: IllegalArgumentException) => renderResponseErrorWithCustomMessage(error.toString, 400, "Illegal Argument!")
       case Some(error: BadRequestException) => renderResponseError(error, 400, "Bad Request!")
       case Some(error: UnauthorizedException) => renderResponseErrorWithCustomMessage(error.toString, 401, "Not Authorized!")
       case Some(error: NotFoundException) => renderResponseError(error, 404, "Not Found!")
       case Some(error: UnsupportedOperationException) => renderResponseErrorWithCustomMessage(error.toString, 406, "No matching accepted Response format could be determined!")
       case Some(error: ConflictException) => renderResponseError(error, 409, "ConflictException!")
+      case Some(error: IllegalArgumentException) => renderResponseErrorWithCustomMessage(error.toString, 422, "Illegal Argument!")
       case _ => renderResponseErrorWithCustomMessage(request.error.toString, 500, "Something went wrong!")
     }
   }

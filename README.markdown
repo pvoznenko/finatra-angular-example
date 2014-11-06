@@ -61,7 +61,7 @@ format could be determined!`.
 You can get authentication token for your communication with server's private API by querying following URL:
 
 ```
-$ curl -i -X POST http://localhost:7070/api/users/authentication
+$ curl -i -H Accept:application/json -X POST http://localhost:7070/api/users/authentication
 ```
 
 You will get response status `201` - because this method will fake user creation and provide you with auth token for private API.
@@ -70,7 +70,7 @@ You can also can check list of authenticated users by following URL (this part m
 optional parameter, default 10. If limit < 0 then you will get all data):
 
 ```
-$ curl -i -X GET -G http://localhost:7070/api/users -d limit={limit.?}
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/users -d limit={limit.?}
 ```
 
 You should get response code `200`.
@@ -81,7 +81,7 @@ On following URL you can get list of available products (limit is optional param
 If limit < 0 then you will get all data):
  
 ```
-curl -i -X GET -G http://localhost:7070/api/products -d limit={limit.?}
+curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/products -d limit={limit.?}
 ```
 
 You should get response code `200`.
@@ -96,7 +96,7 @@ You should pass token in header with key `token`.
 You can get list of all products currently in your basket:
 
 ```
-$ curl -i -X GET -G http://localhost:7070/api/cart/products -H token:{token}
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/cart/products -H token:{token}
 ```
 
 * If everything is OK you should get response code `200`.
@@ -106,13 +106,13 @@ $ curl -i -X GET -G http://localhost:7070/api/cart/products -H token:{token}
 Add new product to your basket:
 
 ```
-$ curl -i -X PUT http://localhost:7070/api/cart/products/{product_id} -H token:{token}
+$ curl -i -H Accept:application/json -X PUT http://localhost:7070/api/cart/products/{productId} -H token:{token}
 ```
 
 * If everything is OK you should get response code `201`;
 * If you trying to add product that is already in your cart you will get response code `409` with following 
 message `Products is already in user's cart!`;
-* Parameter `productId` should be integer otherwise you will get response with code `400` and message `Illegal Argument!`;
+* Parameter `productId` should be integer otherwise you will get response with code `422` and message `Illegal Argument!`;
 * Parameter `productId` should be existing product in the market otherwise you will get response with code `404` and 
 message `Product with provided id '{productId}' is not exist!`.
 
@@ -121,16 +121,14 @@ message `Product with provided id '{productId}' is not exist!`.
 You can update quantity of product that is already in your basket:
 
 ```
-$ curl -i -X PUT http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -H token:{token}
+$ curl -i -H Accept:application/json -X PUT http://localhost:7070/api/cart/products/{productId}/quantity/{quantity} -H token:{token}
 ```
 
 * If everything is OK you should get response code `204`;
-* Parameter `productId` should be integer otherwise you will get response with code `400` and message `Illegal Argument!`;
+* Parameter `productId` should be integer otherwise you will get response with code `422` and message `Illegal Argument!`;
 * Parameter `productId` should be existing product in the market otherwise you will get response with code `404` and 
 message `Product with provided id '{productId}' is not exist!`;
-* Parameter `quantity` should be integer otherwise you will get response with code `400` and message `Illegal Argument!`;
-* Parameter `quantity` should be equal or greater then 0, otherwise you will get response code `400` with following 
-message `Quantity should be positive value!`;
+* Parameter `quantity` should be positive integer otherwise you will get response with code `422` and message `Illegal Argument!`;
 * If you trying to update product that is not in user's shopping cart you will get response code `404` with following 
 message `Product should be in user's cart!`.
 
@@ -139,11 +137,11 @@ message `Product should be in user's cart!`.
 You can remove product from your cart using following URL:
 
 ```
-$ curl -i -X DELETE -G http://localhost:7070/api/cart/products/{product_id} -H token:{token}
+$ curl -i -H Accept:application/json -X DELETE -G http://localhost:7070/api/cart/products/{productId} -H token:{token}
 ```
 
 * If everything is OK you should get response code `204`;
-* Parameter `productId` should be integer otherwise you will get response with code `400` and message `Illegal Argument!`;
+* Parameter `productId` should be integer otherwise you will get response with code `422` and message `Illegal Argument!`;
 * Parameter `productId` should be existing product in the market otherwise you will get response with code `404` and 
 message `Product with provided id '{productId}' is not exist!`;
 * If you trying to remove product that is not in user's shopping cart you will get response code `404` with following 

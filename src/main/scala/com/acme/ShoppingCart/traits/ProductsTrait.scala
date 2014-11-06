@@ -1,6 +1,6 @@
 package com.acme.ShoppingCart.traits
 
-import com.acme.ShoppingCart.exceptions.{NotFoundException, BadRequestException}
+import com.acme.ShoppingCart.exceptions.NotFoundException
 import com.acme.ShoppingCart.dao.ProductsDAO
 import com.twitter.finatra.Request
 
@@ -18,7 +18,7 @@ trait ProductsTrait extends ParamsValidationTrait {
     val quantity = getParam(request.routeParams, "quantity").toInt
 
     quantity match {
-      case amount if amount < 0 => throw new BadRequestException("Quantity should be positive value!")
+      case amount if amount < 0 => throw new IllegalArgumentException
       case _ => quantity
     }
   }

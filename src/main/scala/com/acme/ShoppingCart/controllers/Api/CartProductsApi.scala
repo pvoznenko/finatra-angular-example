@@ -10,7 +10,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
   /**
    * Get all products for user
    *
-   * curl -i -X GET -G http://localhost:7070/api/cart/products -H token:{token}
+   * curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/cart/products -H token:{token}
    */
   get("/api/cart/products")(checkRequestType(_) { request =>
     val userId = getUserId(request)
@@ -22,7 +22,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
   /**
    * Add new product to the user's shopping cart
    *
-   * curl -i -X PUT http://localhost:7070/api/cart/products/{product_id} -H token:{token}
+   * curl -i -H Accept:application/json -X PUT http://localhost:7070/api/cart/products/{productId} -H token:{token}
    */
   put("/api/cart/products/:productId")(checkRequestType(_) { request =>
     val userId = getUserId(request)
@@ -41,7 +41,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
   /**
    * Update information regarding user product in the shopping cart
    *
-   * curl -i -X PUT http://localhost:7070/api/cart/products/{product_id}/quantity/{quantity} -H token:{token}
+   * curl -i -H Accept:application/json -X PUT http://localhost:7070/api/cart/products/{productId}/quantity/{quantity} -H token:{token}
    */
   put("/api/cart/products/:productId/quantity/:quantity")(checkRequestType(_) { request =>
     val userId = getUserId(request)
@@ -57,7 +57,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
   /**
    * Remove item from user's cart
    *
-   * curl -i -X DELETE http://localhost:7070/api/cart/products/{product_id} -H token:{token}
+   * curl -i -H Accept:application/json -X DELETE http://localhost:7070/api/cart/products/{productId} -H token:{token}
    */
   delete("/api/cart/products/:productId")(checkRequestType(_) { request =>
     val userId = getUserId(request)

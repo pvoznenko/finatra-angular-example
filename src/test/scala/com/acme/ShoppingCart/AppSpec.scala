@@ -119,10 +119,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (401)
   }
 
-  "PUT /api/cart/products/abc" should "respond 400 with message `Illegal Argument!`" in {
+  "PUT /api/cart/products/abc" should "respond 422 with message `Illegal Argument!`" in {
     put("/api/cart/products/abc", Map(), getAuthToken)
     response.body.contains ("Illegal Argument!") should equal(true)
-    response.code   should equal (400)
+    response.code   should equal (422)
   }
 
   "PUT /api/cart/products/12" should "respond 404 with message `Product with provided id '12' is not exist!`" in {
@@ -169,10 +169,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (401)
   }
 
-  "PUT /api/cart/products/abc/quantity/1" should "respond 400 with message `Illegal Argument!`" in {
+  "PUT /api/cart/products/abc/quantity/1" should "respond 422 with message `Illegal Argument!`" in {
     put("/api/cart/products/abc/quantity/1", Map(), getAuthToken)
     response.body.contains ("Illegal Argument!") should equal(true)
-    response.code   should equal (400)
+    response.code   should equal (422)
   }
 
   "PUT /api/cart/products/12/quantity/1" should "respond 404 with message `Product with provided id '12' is not exist!`" in {
@@ -181,16 +181,16 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (404)
   }
 
-  "PUT /api/cart/products/1/quantity/abc" should "respond 400 with message `Illegal Argument!`" in {
+  "PUT /api/cart/products/1/quantity/abc" should "respond 422 with message `Illegal Argument!`" in {
     put("/api/cart/products/1/quantity/abc", Map(), getAuthToken)
     response.body.contains ("Illegal Argument!") should equal(true)
-    response.code   should equal (400)
+    response.code   should equal (422)
   }
 
-  "PUT /api/cart/products/1/quantity/-1" should "respond 400 with message `Quantity should be positive value!`" in {
+  "PUT /api/cart/products/1/quantity/-1" should "respond 422 with message `Illegal Argument!`" in {
     put("/api/cart/products/1/quantity/-1", Map(), getAuthToken)
-    response.body.contains ("Quantity should be positive value!") should equal(true)
-    response.code   should equal (400)
+    response.body.contains ("Illegal Argument!") should equal(true)
+    response.code   should equal (422)
   }
 
   "PUT /api/cart/products/1/quantity/1" should "respond 404 with message `Product should be in user's cart!" in {
@@ -227,10 +227,10 @@ class AppSpec extends FlatSpecHelper {
     response.code   should equal (401)
   }
 
-  "DELETE /api/cart/products/abc" should "respond 400 with message `Illegal Argument!`" in {
+  "DELETE /api/cart/products/abc" should "respond 422 with message `Illegal Argument!`" in {
     delete("/api/cart/products/abc", Map(), getAuthToken)
     response.body.contains ("Illegal Argument!") should equal(true)
-    response.code   should equal (400)
+    response.code   should equal (422)
   }
 
   "DELETE /api/cart/products/1" should "respond 404 with message `trying to remove product from user's shopping cart that is not there!`" in {

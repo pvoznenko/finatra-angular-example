@@ -8,7 +8,7 @@ class ProductsApi extends ResponseController {
   /**
    * Get list of available products in our shop
    *
-   * curl -i -X GET -G http://localhost:7070/api/products -d limit={limit.?}
+   * curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/products -d limit={limit.?}
    */
   get("/api/products")(checkRequestType(_) { request =>
     val limit = request.params.getInt("limit")

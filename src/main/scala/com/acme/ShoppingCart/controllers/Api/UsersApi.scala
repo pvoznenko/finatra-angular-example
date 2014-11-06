@@ -9,7 +9,7 @@ class UsersApi extends ResponseController {
   /**
    * Get authentication token
    *
-   * curl -i -X POST http://localhost:7070/api/users/authentication
+   * curl -i -H Accept:application/json -X POST http://localhost:7070/api/users/authentication
    */
   post("/api/users/authentication")(checkRequestType(_) { request =>
     val token = new BearerTokenGeneratorHelper generateSHAToken "ShoppingCart"
