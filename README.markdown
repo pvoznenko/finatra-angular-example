@@ -1,6 +1,8 @@
 # Finatra AngularJS REST API Example Application - ShoppingCart
 
-[![Build Status](https://travis-ci.org/fosco-maestro/finatra-angular-example.svg)](https://travis-ci.org/fosco-maestro/finatra-angular-example)
+[![Build Status](https://travis-ci.org/pvoznenko/finatra-angular-example.svg?branch=master)](https://travis-ci.org/pvoznenko/finatra-angular-example)
+
+Main goal of this project to show how you could use [Finatra](http://finatra.info/).
 
 This example using [Finatra](http://finatra.info/) for the backend and [Slick](http://slick.typesafe.com/) for work with [H2](http://www.h2database.com/) that used as data storage. 
 [AngularJS](https://angularjs.org/) + [Bootstrap](http://getbootstrap.com/) for the frontend as Single Page Application.
