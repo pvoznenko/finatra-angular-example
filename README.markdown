@@ -9,13 +9,13 @@ This example using [Finatra](http://finatra.info/) for the backend and [Slick](h
 
 Finatra requires either [maven](http://maven.apache.org/) or [sbt](http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html) to build and run your app.
 
-## Setup
-
 ## Activator 
 
 You can get this example through [Activator](https://typesafe.com/activator).
 For more information please use following url that explains how to get this template on your computer 
 step-by-step: [https://typesafe.com/activator/template/finatra-angular-example](https://typesafe.com/activator/template/finatra-angular-example)
+
+## Setup
 
 ### Bower Instructions
 
