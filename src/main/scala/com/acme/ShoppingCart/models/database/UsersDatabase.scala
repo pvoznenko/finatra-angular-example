@@ -1,7 +1,7 @@
-package com.acme.ShoppingCart.database
+package com.acme.ShoppingCart.models.database
 
 import com.acme.ShoppingCart.DB
-import com.acme.ShoppingCart.dto.User
+
 import scala.slick.driver.H2Driver.simple._
 
 object UsersDatabase {
@@ -12,8 +12,10 @@ object UsersDatabase {
   }
 }
 
-class Users(tag: Tag) extends Table[User](tag, "USERS") {
+case class UserEntity(token: String, id: Option[Int] = None)
+
+class Users(tag: Tag) extends Table[UserEntity](tag, "USERS") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
   def token = column[String]("TOKEN", O.NotNull)
-  def * = (token, id.?) <> (User.tupled, User.unapply)
+  def * = (token, id.?) <> (UserEntity.tupled, UserEntity.unapply)
 }

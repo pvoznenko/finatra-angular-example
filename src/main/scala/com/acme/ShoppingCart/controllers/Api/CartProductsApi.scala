@@ -2,7 +2,7 @@ package com.acme.ShoppingCart.controllers.Api
 
 import com.acme.ShoppingCart.controllers.ResponseController
 import com.acme.ShoppingCart.exceptions.{NotFoundException, ConflictException}
-import com.acme.ShoppingCart.dao.UserCartDAO
+import com.acme.ShoppingCart.models.UserCartModel
 import com.acme.ShoppingCart.traits.{ResponseTrait, UsersTrait, ProductsTrait, UserCartTrait}
 import com.acme.ShoppingCart.API
 
@@ -15,7 +15,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
    */
   get(API.getBaseUrl ++ "/cart/products")(checkRequestType(_) { request =>
     val userId = getUserId(request)
-    val products = UserCartDAO getUserProducts userId
+    val products = UserCartModel getUserProducts userId
 
     renderResponse(request, render, None, Some(products))
   })
@@ -32,7 +32,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     if (isProductInUserCart(productId, userId))
       throw new ConflictException("Product is already in user's cart!")
     else {
-      val rowId = UserCartDAO add (userId, productId)
+      val rowId = UserCartModel add (userId, productId)
       val response = mapCreateResponse(rowId, userId, productId)
 
       renderResponse(request, render, Some(201), Some(response))
@@ -50,7 +50,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     val quantity = getProductQuantity(request)
 
     if (isProductInUserCart(productId, userId)) {
-      UserCartDAO updateProductQuantity (userId, productId, quantity)
+      UserCartModel updateProductQuantity (userId, productId, quantity)
       renderResponse(request, render, Some(204))
     } else throw new NotFoundException("Product should be in user's cart!")
   })
@@ -64,7 +64,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     val userId = getUserId(request)
     val productId = getProductId(request)
 
-    val removedRows = UserCartDAO remove (userId, productId)
+    val removedRows = UserCartModel remove (userId, productId)
 
     if (removedRows > 0) renderResponse(request, render, Some(204))
     else throw new NotFoundException("trying to remove product from user's shopping cart that is not there!")

@@ -2,8 +2,8 @@ package com.acme.ShoppingCart.controllers.Api
 
 import com.acme.ShoppingCart.controllers.ResponseController
 import com.acme.ShoppingCart.helpers.BearerTokenGeneratorHelper
-import com.acme.ShoppingCart.dao.UsersDAO
 import com.acme.ShoppingCart.API
+import com.acme.ShoppingCart.models.UsersModel
 
 class UsersApi extends ResponseController {
 
@@ -16,7 +16,7 @@ class UsersApi extends ResponseController {
     val token = new BearerTokenGeneratorHelper generateSHAToken "ShoppingCart"
     val response = Map("token" -> token)
 
-    UsersDAO add token
+    UsersModel add token
 
     renderResponse(request, render, Some(201), Some(response))
   })
@@ -28,7 +28,7 @@ class UsersApi extends ResponseController {
    */
   get(API.getBaseUrl ++ "/users")(checkRequestType(_) { request =>
     val limit = request.params.getInt("limit")
-    val users = UsersDAO.getAll(limit)
+    val users = UsersModel.getAll(limit)
 
     renderResponse(request, render, Some(200), Some(users))
   })

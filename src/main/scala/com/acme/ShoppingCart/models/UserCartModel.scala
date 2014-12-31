@@ -1,14 +1,13 @@
-package com.acme.ShoppingCart.dao
+package com.acme.ShoppingCart.models
 
-import com.acme.ShoppingCart.dto.Cart
-import scala.slick.driver.H2Driver.simple._
-import com.acme.ShoppingCart.database.UserCartDatabase._
-import com.acme.ShoppingCart.database.Products
 import com.acme.ShoppingCart.DB
+import com.acme.ShoppingCart.models.database.{CartEntity, Products}
+import com.acme.ShoppingCart.models.database.UserCartDatabase._
+import scala.slick.driver.H2Driver.simple._
 
-object UserCartDAO {
+object UserCartModel {
   def add(userId: Int, productId: Int) = DB.connection.withSession { implicit session =>
-      (userCart returning userCart.map(_.id)) += Cart(userId, productId, 1)
+      (userCart returning userCart.map(_.id)) += CartEntity(userId, productId, 1)
     }
 
   def getUserProducts(userId: Int) = DB.connection.withSession { implicit session =>
