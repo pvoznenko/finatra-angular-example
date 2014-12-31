@@ -7,13 +7,15 @@ import scala.slick.driver.H2Driver.simple._
 object ProductsDatabase {
   val products = TableQuery[Products]
 
-  implicit val session = DB.connection.createSession()
+  DB.connection.withSession{
+    implicit session =>
 
-  products.ddl.create
+    products.ddl.create
 
-  products += Product("Mac Book Retina 15'", 1299)
-  products += Product("Nexus 6", 649)
-  products += Product("Surface", 750)
+    products += Product("Mac Book Retina 15'", 1299)
+    products += Product("Nexus 6", 649)
+    products += Product("Surface", 750)
+  }
 }
 
 class Products(tag: Tag) extends Table[Product](tag, "PRODUCTS") {

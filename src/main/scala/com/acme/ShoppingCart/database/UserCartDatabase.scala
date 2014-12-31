@@ -7,9 +7,9 @@ import scala.slick.driver.H2Driver.simple._
 object UserCartDatabase {
   val userCart = TableQuery[UserCart]
 
-  implicit val session = DB.connection.createSession()
-
-  userCart.ddl.create
+  DB.connection.withSession { implicit session =>
+    userCart.ddl.create
+  }
 }
 
 class UserCart(tag: Tag) extends Table[Cart](tag, "CART") {

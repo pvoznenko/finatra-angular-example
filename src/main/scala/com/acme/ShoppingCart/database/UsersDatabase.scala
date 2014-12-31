@@ -7,9 +7,9 @@ import scala.slick.driver.H2Driver.simple._
 object UsersDatabase {
   val users = TableQuery[Users]
 
-  implicit val session = DB.connection.createSession()
-
-  users.ddl.create
+  DB.connection.withSession { implicit session =>
+    users.ddl.create
+  }
 }
 
 class Users(tag: Tag) extends Table[User](tag, "USERS") {
