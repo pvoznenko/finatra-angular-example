@@ -3,6 +3,7 @@ package com.acme.ShoppingCart.controllers.Api
 import com.acme.ShoppingCart.controllers.ResponseController
 import com.acme.ShoppingCart.API
 import com.acme.ShoppingCart.models.ProductsModel
+import scala.util.{Success, Failure, Try}
 
 class ProductsApi extends ResponseController {
 
@@ -12,9 +13,14 @@ class ProductsApi extends ResponseController {
    * curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v3/products -d limit={limit.?}
    */
   get(API.getBaseUrl ++ "/products")(checkRequestType(_) { request =>
-    val limit = request.params.getInt("limit")
-    val products = ProductsModel.getAll(limit)
-
-    renderResponse(request, render, Some(200), Some(products))
+    (for {
+      limit <- Try(request.params getInt "limit")
+      products <- Try(ProductsModel getAll limit)
+    } yield {
+      products
+    }) match {
+      case Failure(error) => throw error
+      case Success(products) => renderResponse(request, render, Some(200), Some(products))
+    }
   })
 }

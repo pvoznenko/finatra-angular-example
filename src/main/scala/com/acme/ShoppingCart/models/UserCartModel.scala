@@ -7,8 +7,8 @@ import scala.slick.driver.H2Driver.simple._
 
 object UserCartModel {
   def add(userId: Int, productId: Int) = DB.connection.withSession { implicit session =>
-      (userCart returning userCart.map(_.id)) += CartEntity(userId, productId, 1)
-    }
+    (userCart returning userCart.map(_.id)) += CartEntity(userId, productId, 1)
+  }
 
   def getUserProducts(userId: Int) = DB.connection.withSession { implicit session =>
     val query = for {
@@ -24,13 +24,14 @@ object UserCartModel {
   }
 
   def updateProductQuantity(userId: Int, productId: Int, quantity: Int) = DB.connection.withSession { implicit session =>
-    val query = getByUserAndProduct(userId, productId).map(_.quantity)
-    query.update(quantity)
+    getByUserAndProduct(userId, productId).map(_.quantity).update(quantity)
   }
 
   def remove(userId: Int, productId: Int) = DB.connection.withSession { implicit session =>
     getByUserAndProduct(userId, productId).delete
   }
+
+  def isProductInUserCart(productId: Int, userId: Int) = getUserProduct(userId, productId).nonEmpty
 
   private[this] def getByUserAndProduct(userId: Int, productId: Int) = DB.connection.withSession { implicit session =>
     userCart.filter(_.userId === userId).filter(_.productId === productId)

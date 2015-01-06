@@ -4,6 +4,7 @@ import com.acme.ShoppingCart.controllers.ResponseController
 import com.acme.ShoppingCart.helpers.BearerTokenGeneratorHelper
 import com.acme.ShoppingCart.API
 import com.acme.ShoppingCart.models.UsersModel
+import scala.util.{Success, Failure, Try}
 
 class UsersApi extends ResponseController {
 
@@ -13,12 +14,15 @@ class UsersApi extends ResponseController {
    * curl -i -H Accept:application/json -X POST http://localhost:7070/api/v3/users/authentication
    */
   post(API.getBaseUrl ++ "/users/authentication")(checkRequestType(_) { request =>
-    val token = new BearerTokenGeneratorHelper generateSHAToken "ShoppingCart"
-    val response = Map("token" -> token)
-
-    UsersModel add token
-
-    renderResponse(request, render, Some(201), Some(response))
+    (for {
+      token <- Try(new BearerTokenGeneratorHelper generateSHAToken "ShoppingCart")
+      addedRows <- Try(UsersModel add token)
+    } yield {
+      Map("token" -> token)
+    }) match {
+      case Failure(error) => throw error
+      case Success(response) => renderResponse(request, render, Some(201), Some(response))
+    }
   })
 
   /**
@@ -27,9 +31,14 @@ class UsersApi extends ResponseController {
    * curl -i -X GET -G http://localhost:7070/api/v3/users -d limit={limit.?}
    */
   get(API.getBaseUrl ++ "/users")(checkRequestType(_) { request =>
-    val limit = request.params.getInt("limit")
-    val users = UsersModel.getAll(limit)
-
-    renderResponse(request, render, Some(200), Some(users))
+    (for {
+      limit <- Try(request.params getInt "limit")
+      users <- Try(UsersModel getAll limit)
+    } yield {
+      users
+    }) match {
+      case Failure(error) => throw error
+      case Success(users) => renderResponse(request, render, Some(200), Some(users))
+    }
   })
 }
