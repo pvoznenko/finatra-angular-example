@@ -35,7 +35,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     (for {
       userId <- tryGetUserId(request.headerMap)
       productId <- tryGetProductId(request.routeParams)
-      check <- Try(if (UserCartModel isProductInUserCart(productId, userId)) throw new ConflictException("Product is already in user's cart!"))
+      guard <- Try(if (UserCartModel isProductInUserCart(productId, userId)) throw new ConflictException("Product is already in user's cart!"))
       rowId <- Try(UserCartModel add (userId, productId))
     } yield {
       mapCreateResponse(rowId, userId, productId)
@@ -55,7 +55,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
       userId <- tryGetUserId(request.headerMap)
       productId <- tryGetProductId(request.routeParams)
       quantity <- tryGetProductQuantity(request.routeParams)
-      check <- Try(if (!(UserCartModel isProductInUserCart(productId, userId))) throw new NotFoundException("Product should be in user's cart!"))
+      guard <- Try(if (!(UserCartModel isProductInUserCart(productId, userId))) throw new NotFoundException("Product should be in user's cart!"))
       changedRows <- Try(UserCartModel updateProductQuantity(userId, productId, quantity))
     } yield {
       changedRows
@@ -75,7 +75,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
       userId <- tryGetUserId(request.headerMap)
       productId <- tryGetProductId(request.routeParams)
       removedRows <- Try(UserCartModel remove (userId, productId))
-      check <- Try(if (removedRows <= 0) throw new NotFoundException("trying to remove product from user's shopping cart that is not there!"))
+      guard <- Try(if (removedRows <= 0) throw new NotFoundException("trying to remove product from user's shopping cart that is not there!"))
     } yield {
       removedRows
     }) match {
