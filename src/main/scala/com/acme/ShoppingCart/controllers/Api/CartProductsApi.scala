@@ -18,11 +18,9 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
   get(API.getBaseUrl ++ "/cart/products")(checkRequestType(_) { request =>
     (for {
       userId <- tryGetUserId(request.headerMap)
-      products <- Try(UserCartModel getUserProducts userId)
-    } yield {
-      products
-    }) match {
-      case Failure(error) => Future exception error
+      products <- Try(UserCartModel.getUserProducts(userId))
+    } yield products) match {
+      case Failure(error) => Future.exception(error)
       case Success(products) => renderResponse(request, render, None, Some(products))
     }
   })
@@ -36,12 +34,10 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     (for {
       userId <- tryGetUserId(request.headerMap)
       productId <- tryGetProductId(request.routeParams)
-      guard <- Try(if (UserCartModel isProductInUserCart(productId, userId)) throw new ConflictException("Product is already in user's cart!"))
-      rowId <- Try(UserCartModel add (userId, productId))
-    } yield {
-      mapCreateResponse(rowId, userId, productId)
-    }) match {
-      case Failure(error) => Future exception error
+      guard <- Try(if (UserCartModel.isProductInUserCart(productId, userId)) throw new ConflictException("Product is already in user's cart!"))
+      rowId <- Try(UserCartModel.add(userId, productId))
+    } yield mapCreateResponse(rowId, userId, productId)) match {
+      case Failure(error) => Future.exception(error)
       case Success(response) => renderResponse(request, render, Some(201), Some(response))
     }
   })
@@ -56,12 +52,10 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
       userId <- tryGetUserId(request.headerMap)
       productId <- tryGetProductId(request.routeParams)
       quantity <- tryGetProductQuantity(request.routeParams)
-      guard <- Try(if (!(UserCartModel isProductInUserCart(productId, userId))) throw new NotFoundException("Product should be in user's cart!"))
-      changedRows <- Try(UserCartModel updateProductQuantity(userId, productId, quantity))
-    } yield {
-      changedRows
-    }) match {
-      case Failure(error) => Future exception error
+      guard <- Try(if (!UserCartModel.isProductInUserCart(productId, userId)) throw new NotFoundException("Product should be in user's cart!"))
+      changedRows <- Try(UserCartModel.updateProductQuantity(userId, productId, quantity))
+    } yield changedRows) match {
+      case Failure(error) => Future.exception(error)
       case Success(_) => renderResponse(request, render, Some(204))
     }
   })
@@ -75,12 +69,10 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     (for {
       userId <- tryGetUserId(request.headerMap)
       productId <- tryGetProductId(request.routeParams)
-      removedRows <- Try(UserCartModel remove (userId, productId))
+      removedRows <- Try(UserCartModel.remove(userId, productId))
       guard <- Try(if (removedRows <= 0) throw new NotFoundException("trying to remove product from user's shopping cart that is not there!"))
-    } yield {
-      removedRows
-    }) match {
-      case Failure(error) => Future exception error
+    } yield removedRows) match {
+      case Failure(error) => Future.exception(error)
       case Success(_) => renderResponse(request, render, Some(204))
     }
   })

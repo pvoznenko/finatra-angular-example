@@ -15,12 +15,10 @@ class ProductsApi extends ResponseController {
    */
   get(API.getBaseUrl ++ "/products")(checkRequestType(_) { request =>
     (for {
-      limit <- Try(request.params getInt "limit")
-      products <- Try(ProductsModel getAll limit)
-    } yield {
-      products
-    }) match {
-      case Failure(error) => Future exception error
+      limit <- Try(request.params.getInt("limit"))
+      products <- Try(ProductsModel.getAll(limit))
+    } yield products) match {
+      case Failure(error) => Future.exception(error)
       case Success(products) => renderResponse(request, render, Some(200), Some(products))
     }
   })
