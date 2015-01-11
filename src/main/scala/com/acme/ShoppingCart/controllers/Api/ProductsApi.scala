@@ -3,6 +3,7 @@ package com.acme.ShoppingCart.controllers.Api
 import com.acme.ShoppingCart.controllers.ResponseController
 import com.acme.ShoppingCart.API
 import com.acme.ShoppingCart.models.ProductsModel
+import com.twitter.util.Future
 import scala.util.{Success, Failure, Try}
 
 class ProductsApi extends ResponseController {
@@ -19,7 +20,7 @@ class ProductsApi extends ResponseController {
     } yield {
       products
     }) match {
-      case Failure(error) => throw error
+      case Failure(error) => Future exception error
       case Success(products) => renderResponse(request, render, Some(200), Some(products))
     }
   })

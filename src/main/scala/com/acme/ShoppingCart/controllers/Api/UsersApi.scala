@@ -4,6 +4,7 @@ import com.acme.ShoppingCart.controllers.ResponseController
 import com.acme.ShoppingCart.helpers.BearerTokenGeneratorHelper
 import com.acme.ShoppingCart.API
 import com.acme.ShoppingCart.models.UsersModel
+import com.twitter.util.Future
 import scala.util.{Success, Failure, Try}
 
 class UsersApi extends ResponseController {
@@ -20,7 +21,7 @@ class UsersApi extends ResponseController {
     } yield {
       Map("token" -> token)
     }) match {
-      case Failure(error) => throw error
+      case Failure(error) => Future exception error
       case Success(response) => renderResponse(request, render, Some(201), Some(response))
     }
   })
@@ -37,7 +38,7 @@ class UsersApi extends ResponseController {
     } yield {
       users
     }) match {
-      case Failure(error) => throw error
+      case Failure(error) => Future exception error
       case Success(users) => renderResponse(request, render, Some(200), Some(users))
     }
   })

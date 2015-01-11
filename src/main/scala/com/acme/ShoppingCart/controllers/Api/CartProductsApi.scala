@@ -6,6 +6,7 @@ import com.acme.ShoppingCart.models.UserCartModel
 import com.acme.ShoppingCart.traits.{ResponseTrait, UsersTrait, ProductsTrait}
 import com.acme.ShoppingCart.API
 import scala.util.{Try, Success, Failure}
+import com.twitter.util.Future
 
 class CartProductsApi extends ResponseController with UsersTrait with ProductsTrait with ResponseTrait {
 
@@ -21,7 +22,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     } yield {
       products
     }) match {
-      case Failure(error) => throw error
+      case Failure(error) => Future exception error
       case Success(products) => renderResponse(request, render, None, Some(products))
     }
   })
@@ -40,7 +41,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     } yield {
       mapCreateResponse(rowId, userId, productId)
     }) match {
-      case Failure(error) => throw error
+      case Failure(error) => Future exception error
       case Success(response) => renderResponse(request, render, Some(201), Some(response))
     }
   })
@@ -60,7 +61,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     } yield {
       changedRows
     }) match {
-      case Failure(error) => throw error
+      case Failure(error) => Future exception error
       case Success(_) => renderResponse(request, render, Some(204))
     }
   })
@@ -79,7 +80,7 @@ class CartProductsApi extends ResponseController with UsersTrait with ProductsTr
     } yield {
       removedRows
     }) match {
-      case Failure(error) => throw error
+      case Failure(error) => Future exception error
       case Success(_) => renderResponse(request, render, Some(204))
     }
   })
