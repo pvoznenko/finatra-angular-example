@@ -1,5 +1,8 @@
 language: scala
 
+jdk:
+  - openjdk6
+
 before_install:
   - npm install -g bower
   - bower install
