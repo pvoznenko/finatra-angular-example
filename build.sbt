@@ -11,5 +11,7 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.4.182"
 )
 
-resolvers +=
-  "Twitter" at "http://maven.twttr.com"
+resolvers ++= Seq(
+    "Twitter Maven" at "http://maven.twttr.com",
+    "Finatra Repo" at "http://twitter.github.com/finatra"
+)
